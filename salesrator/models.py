@@ -9,6 +9,11 @@ from sqlalchemy.orm import (
     sessionmaker,
     )
 
+from pyramid.security import (
+    Allow,
+    Everyone,
+    )
+
 from zope.sqlalchemy import ZopeTransactionExtension
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -35,4 +40,17 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow)
     acti_tkn = Column(String(SIZE_255), nullable=True)
 
+    def to_dict(self):
+      return {
+        'name': self.name,
+        'email': self.email,
+        'u3id': self.u3id
+      }
+
 Index('my_index_e', User.email, unique=True, mysql_length=SIZE_255)
+
+class RootFactory(object):
+    __acl__ = [ (Allow, Everyone, 'public'),
+                (Allow, 'user:auth', 'auth') ]
+    def __init__(self, request):
+        pass

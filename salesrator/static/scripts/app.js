@@ -18,7 +18,13 @@ window.a3app.config(function($stateProvider, $urlRouterProvider) {
     url: '/plot',
     templateUrl: '/static/part/plot.html',
     controller: 'plotCtrl'
+  })
+  .state('app.signup', {
+    url: '/signup',
+    templateUrl: '/static/part/signup.html',
+    controller: 'signupCtrl'
   });
+  
   // Default redirect
   $urlRouterProvider.otherwise('/app/cleanup');
 });

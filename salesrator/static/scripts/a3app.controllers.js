@@ -2,19 +2,15 @@ angular.module('a3app.controllers', [])
 .controller('globalCtrl', function($rootScope, $http) {
   if(window.innerWidth < 768)
     $rootScope.isCollapsed = true;
-  $rootScope.a3file = null; // data about uploaded file
-  // console.log("We are in globalCtrl")
 
-  // // $http.post('/api/cleanup',{hello:'world'}).success(function(r){
-  //   $http.post('/api/cleanup', {msg:'hello word!'}).
-  // success(function(data, status, headers, config) {
-  //   // this callback will be called asynchronously
-  //   console.log(data,"here is ");
-  //   // when the response is available
-  // });
-  // });
+  $rootScope.a3file = null; // data about uploaded file
 })
-.controller('plotCtrl', function($scope) {
+.controller('signupCtrl', function($scope, $rootScope) {
+  $rootScope.isSession = false;
+  console.log('in signupCtrl now!');
+})
+.controller('plotCtrl', function($scope, $rootScope) {
+  $rootScope.isSession = true;
   $scope.imageUrl = '';
   $scope.imageType = null;
 
@@ -24,7 +20,9 @@ angular.module('a3app.controllers', [])
     }
   }
 })
-.controller('cleanupCtrl', function($scope, $http) {
+.controller('cleanupCtrl', function($scope, $rootScope, $http) {
+  $rootScope.isSession = true;
+
   $scope.operations = [
   {'name':'misssing value', 'para':['cols','replace_by']},
   {'name':'replace value', 'para':['col', 'to_replace', 'replace_by']},
@@ -35,4 +33,4 @@ angular.module('a3app.controllers', [])
   ];
 
   $scope.selectedOperation = 0;
-})
+});
