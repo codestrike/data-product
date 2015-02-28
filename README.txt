@@ -12,3 +12,8 @@ Getting Started
 
 - $VENV/bin/pserve development.ini
 
+After Changing Database
+--------------------------------
+You must make sure that your database is updated as per changes in model.py and initializedb.py
+
+- $VENV/bin/python scripts/initializedb.py
