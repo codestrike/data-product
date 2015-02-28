@@ -1,0 +1,27 @@
+class cleanup_dict:
+	oprations=[
+	    {'opretion' : 'data_types', 'id' : '100' , 'para' :[]},
+	    {'opretion' : 'describe_numeric', 'id' : '101' , 'para' :[]},
+	    {'opretion' : 'describe_all', 'id' : '102' , 'para' :[]},
+	    {'opretion' : 'describe_categorical', 'id' : '103' , 'para' :[]},
+	    {'opretion' : 'get_unique_vals', 'id' : '104' , 'para' :[]},
+	    {'opretion' : 'num_outliers', 'id' : '105' , 'para' :[]},
+	    {'opretion' : 'missing_value', 'id' : '106' , 'para' :['cols' , 'replace_by']},
+	    {'opretion' : 'replace_value', 'id' : '107' , 'para' :['to_replace' , 'col' , 'replace_by']},
+	    {'opretion' : 'replace_non_number', 'id' : '108' , 'para' :['cols' , 'replace_by']},
+	    {'opretion' : 'replace_negative', 'id' : '109' , 'para' :['col' , 'delete' , 'replace_by']},
+	    {'opretion' : 'to_upper', 'id' : '1010' , 'para' :['col']},
+	    {'opretion' : 'to_lower', 'id' : '1011' , 'para' :['col']},
+	    {'opretion' : 'strip_left_right', 'id' : '1012' , 'para' :['col']},
+	    {'opretion' : 'slice_string', 'id' : '1013' , 'para' :['col' , 'number']},
+	    {'opretion' : 'floor', 'id' : '1014' , 'para' :['col','floor','delete','replace_by']},
+	    {'opretion' : 'cap', 'id' : '1015' , 'para' :['col','cap','delete','replace_by']},
+	    {'opretion' : 'convert_to_float', 'id' : '1016' , 'para' :['cols']},
+	    {'opretion' : 'convert_to_int', 'id' : '1017' , 'para' :['cols']},
+	    {'opretion' : 'string_to_float', 'id' : '1018' , 'para' :['cols']},
+	    {'opretion' : 'convert_to_category', 'id' : '1019' , 'para' :['cols']},
+	    {'opretion' : 'string_to_int', 'id' : '1020' , 'para' :['cols']},
+	    {'opretion' : 'remove_lower_outlier', 'id' : '1021' , 'para' :['col','lower']},
+	    {'opretion' : 'remove_higher_outlier', 'id' : '1022' , 'para' :['col','higher']},
+	    {'opretion' : 'delete_col', 'id' : '1023' , 'para' :['group_cols']}
+	    ]
