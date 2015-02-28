@@ -31,9 +31,9 @@
         <li> <a>SideAction</a> </li>
       </ul> -->
 
-      <div class="navbar-default sidebar" role="navigation">
+      <div class="navbar-default sidebar" role="navigation" ng-if="inSession">
         <div class="sidebar-nav navbar-collapse" collapse="isCollapsed">
-          <ul class="nav" id="side-menu" ng-if="inSession">
+          <ul class="nav" id="side-menu">
             <li>
               <a ui-sref="app.cleanup"><i class="fa fa-dashboard fa-fw"></i> Data Cleanup</a>
             </li>

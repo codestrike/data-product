@@ -1,16 +1,42 @@
 angular.module('a3app.controllers', [])
-.controller('globalCtrl', function($rootScope, $http) {
+.controller('globalCtrl', function($scope, $http) {
+  $scope.isSession = false;
   if(window.innerWidth < 768)
-    $rootScope.isCollapsed = true;
+    $scope.isCollapsed = true;
+  else
+    $scope.isCollapsed = false;
+  console.log($scope.isCollapsed, $scope.isSession);
 
-  $rootScope.a3file = null; // data about uploaded file
+  $scope.a3file = null; // data about uploaded file
+  $scope.demoProp = 'demo';
 })
-.controller('signupCtrl', function($scope, $rootScope) {
-  $rootScope.isSession = false;
+.controller('loginCtrl', function($scope, $http, $state) {
+  $scope.isSession = false;
+
+  $scope.try_login = function() {
+    console.log($scope.email);
+    if($scope.loginform.$valid) {
+      $http.post('/api/login', {
+        email: $scope.email,
+        passwd: $scope.passwd
+      }).success(function(res) {
+        console.log('LOGIN SUCCESS', res);
+        if(res.status == 'success') {
+          $state.go('app.cleanup');
+        } else {
+          $scope.email = 'Wrong Credentials';
+          $scope.passwd = ''
+        }
+      });
+    }
+  };
+})
+.controller('signupCtrl', function($scope) {
+  $scope.isSession = false;
   console.log('in signupCtrl now!');
 })
-.controller('plotCtrl', function($scope, $rootScope) {
-  $rootScope.isSession = true;
+.controller('plotCtrl', function($scope) {
+  $scope.isSession = true;
   $scope.imageUrl = '';
   $scope.imageType = null;
 
@@ -20,8 +46,8 @@ angular.module('a3app.controllers', [])
     }
   }
 })
-.controller('cleanupCtrl', function($scope, $rootScope, $http) {
-  $rootScope.isSession = true;
+.controller('cleanupCtrl', function($scope, $http) {
+  $scope.isSession = true;
 
   $scope.operations = [
   {'name':'misssing value', 'para':['cols','replace_by']},

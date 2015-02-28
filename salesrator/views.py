@@ -1,13 +1,22 @@
 import os, uuid
 import shutil
 from pyramid.response import Response
-from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
+from pyramid.view import (
+  view_config,
+  forbidden_view_config,
+  )
 
 from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
     MyModel,
+    )
+
+from pyramid.security import (
+    remember,
+    forget,
     )
 
 from .a3 import cleanup_dict
@@ -47,7 +56,6 @@ try it again.
 def load_app(request):
     return {'title':'Salesrator - Analyze your data'}
 
-
 #list of all the oprations
 @view_config(route_name='oprations', renderer='json', permission='auth')
 def operation_list(request):
@@ -77,6 +85,28 @@ def handle_file(request):
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
   return Response('OK')
+
+# login, logout, signup
+@view_config(route_name='login', renderer='json', permission='public')
+def try_login(request):
+  data = dict(request.json_body)
+  for x in ['passwd', 'email']:
+    if not x in data:
+      return {'status':'error', 'message':'Insufficient Data'}
+  if not auth_user(data['email'], data['passwd']) == False:
+    headers = remember(request, data['email'])
+    print "LOGIN SUCCESS"
+    return HTTPFound(location=request.route_url('loginsuccess'), headers=headers)
+  return {'status': 'error', 'message':'Wrong Credentials'}
+
+@view_config(route_name='loginsuccess', renderer='json', permission='auth')
+def echo_success(request):
+  return {'status':'success'}
+
+@view_config(route_name='logout', renderer='json', permission='auth')
+def logout(request):
+  headers = forget(request)
+  return HTTPFound(location=request.route_url('app'), headers=headers)
 
 @view_config(route_name='signup', renderer='json', permission='public')
 def signup_new_user(request):

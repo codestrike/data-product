@@ -38,3 +38,6 @@ def auth_user(email, plain):
   if not u == None:
     return ['user:auth'] if u.passhash == hashlib.sha1(plain).hexdigest() else False
   return False
+
+def groupfinder(userid, request):
+  return ['user:auth']

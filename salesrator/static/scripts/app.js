@@ -23,8 +23,13 @@ window.a3app.config(function($stateProvider, $urlRouterProvider) {
     url: '/signup',
     templateUrl: '/static/part/signup.html',
     controller: 'signupCtrl'
+  })
+  .state('app.login', {
+    url: '/login',
+    templateUrl: '/static/part/login.html',
+    controller: 'loginCtrl'
   });
-  
+
   // Default redirect
-  $urlRouterProvider.otherwise('/app/cleanup');
+  $urlRouterProvider.otherwise('/app/login');
 });
