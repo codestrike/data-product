@@ -1,7 +1,11 @@
 import os, uuid
 import shutil
 from pyramid.response import Response
-from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
+from pyramid.view import (
+  view_config,
+  forbidden_view_config,
+  )
 
 from sqlalchemy.exc import DBAPIError
 
@@ -10,8 +14,14 @@ from .models import (
     MyModel,
     )
 
+from pyramid.security import (
+    remember,
+    forget,
+    )
+
 from .a3 import cleanup_dict
 from .a3file import touch
+from .a3user import *
 
 
 
@@ -42,18 +52,17 @@ try it again.
 """
 
 # View for HTML, JS, CSS 
-@view_config(route_name='app', renderer='templates/app.pt')
+@view_config(route_name='app', renderer='templates/app.pt', permission='public')
 def load_app(request):
     return {'title':'Salesrator - Analyze your data'}
 
-
 #list of all the oprations
-@view_config(route_name='oprations', renderer='json')
+@view_config(route_name='oprations', renderer='json', permission='auth')
 def operation_list(request):
   # print cleanup_dict.oprations
   return cleanup_dict.oprations
 
-@view_config(route_name='cleanup', renderer='json')
+@view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
   # print request.body
   data= dict(request.json_body)
@@ -62,7 +71,7 @@ def cleanup_api(request):
   print  id,para
   return  id,para
 
-@view_config(route_name='fileupload', renderer='string')
+@view_config(route_name='fileupload', renderer='string', permission='auth')
 def handle_file(request):
   userid = str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash'))
   t = touch()
@@ -76,3 +85,35 @@ def handle_file(request):
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
   return Response('OK')
+
+# login, logout, signup
+@view_config(route_name='login', renderer='json', permission='public')
+def try_login(request):
+  data = dict(request.json_body)
+  for x in ['passwd', 'email']:
+    if not x in data:
+      return {'status':'error', 'message':'Insufficient Data'}
+  if not auth_user(data['email'], data['passwd']) == False:
+    headers = remember(request, data['email'])
+    print "LOGIN SUCCESS"
+    return HTTPFound(location=request.route_url('loginsuccess'), headers=headers)
+  return {'status': 'error', 'message':'Wrong Credentials'}
+
+@view_config(route_name='loginsuccess', renderer='json', permission='auth')
+def echo_success(request):
+  return {'status':'success'}
+
+@view_config(route_name='logout', renderer='templates/app.pt', permission='auth')
+def logout(request):
+  headers = forget(request)
+  return HTTPFound(location=request.route_url('app'), headers=headers)
+
+@view_config(route_name='signup', renderer='json', permission='public')
+def signup_new_user(request):
+  for x in ['passwd', 'email', 'name']:
+    if not x in request.POST:
+      return {'status':'error', 'message':'Insufficient Data'}
+  return {
+    'status':'success', 
+    'u3id':add_user(request.POST['email'], request.POST['passwd'], request.POST['name'])
+    }

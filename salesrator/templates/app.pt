@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
   <script type="text/javascript" src="${request.static_url('salesrator:static/lib/angular.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('salesrator:static/lib/cookies.js')}"></script>
   <script type="text/javascript" src="${request.static_url('salesrator:static/lib/angular-ui-router.js')}"></script>
   <script type="text/javascript" src="${request.static_url('salesrator:static/lib/ui-bootstrap-tpls-0.12.0.js')}"></script>
   <script type="text/javascript" src="${request.static_url('salesrator:static/scripts/a3app.controllers.js')}"></script>
@@ -16,35 +17,6 @@
 </head>
 <body>
   <div id="wrapper">
-    <nav class="navbar panel-green navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-      <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" ng-click="isCollapsed = !isCollapsed" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">${title}</a>
-      </div>
-
-      <!-- <ul class="nav navbar-top-links navbar-right">
-        <li> <a>SideAction</a> </li>
-      </ul> -->
-
-      <div class="navbar-default sidebar" role="navigation">
-        <div class="sidebar-nav navbar-collapse" collapse="isCollapsed">
-          <ul class="nav" id="side-menu">
-            <li>
-              <a ui-sref="app.cleanup"><i class="fa fa-dashboard fa-fw"></i> Data Cleanup</a>
-            </li>
-            <li>
-              <a ui-sref="app.plot"><i class="fa fa-dashboard fa-fw"></i> Plot</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
     <div ui-view></div>
     <div>
       <form action="/api/fileupload" method="post" accept-charset="utf-8"
