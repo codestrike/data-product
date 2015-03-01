@@ -1,7 +1,8 @@
-angular.module('a3app.controllers', [])
-.controller('globalCtrl', function($scope, $rootScope, $http) {
+angular.module('a3app.controllers', ['ngCookies'])
+.controller('globalCtrl', function($cookies, $http, $rootScope, $scope, $state) {
   $scope.inSession = false;
   $rootScope.inSession = $scope.inSession;
+
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
   else
@@ -12,10 +13,20 @@ angular.module('a3app.controllers', [])
 
   $scope.showSidebar = function(yes) {
     $scope.inSession = yes;
-  }
+  };
+
+  $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
+    if(!$cookies.auth_tkt && toState.name != 'app.login') {
+      console.log('Permission Denied 403');
+      ev.preventDefault();
+      $state.go('app.login');
+    }
+  });
 })
-.controller('loginCtrl', function($scope, $http, $state) {
+.controller('loginCtrl', function($scope, $http, $state, $templateCache) {
+  $templateCache.removeAll();
   $scope.showSidebar(false);
+  console.log('loginCtrl');
 
   $scope.try_login = function() {
     if($scope.loginform.$valid) {
@@ -38,6 +49,7 @@ angular.module('a3app.controllers', [])
   $scope.showSidebar(false);
 })
 .controller('plotCtrl', function($scope) {
+  console.log('plotCtrl');
   $scope.showSidebar(true);
   $scope.imageUrl = '';
   $scope.imageType = null;
@@ -49,6 +61,7 @@ angular.module('a3app.controllers', [])
   }
 })
 .controller('cleanupCtrl', function($scope, $http) {
+  console.log('cleanupCtrl');
   $scope.showSidebar(true);
 
   $scope.operations = [

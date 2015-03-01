@@ -103,7 +103,7 @@ def try_login(request):
 def echo_success(request):
   return {'status':'success'}
 
-@view_config(route_name='logout', renderer='json', permission='auth')
+@view_config(route_name='logout', renderer='templates/app.pt', permission='auth')
 def logout(request):
   headers = forget(request)
   return HTTPFound(location=request.route_url('app'), headers=headers)
