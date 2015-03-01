@@ -63,8 +63,13 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('cleanupCtrl', function($scope, $http) {
   console.log('cleanupCtrl');
   $scope.showSidebar(true);
+  if(!angular.isDefined($scope.operations)) {
+    $http.get('/api/operations').success(function(res) {
+      $scope.operations = res;
+    });
+  }
 
-  $scope.operations = [
+  $scope.operationsOld = [
   {'name':'misssing value', 'para':['cols','replace_by']},
   {'name':'replace value', 'para':['col', 'to_replace', 'replace_by']},
   {'name':'replace non number', 'para':['cols','replace_by','to_int']},
