@@ -6,7 +6,7 @@ window.a3app.config(function($stateProvider, $urlRouterProvider) {
   .state('app', {
     abstract: true,
     url: '/app',
-    template: '<div><div ui-view></div></div>',
+    templateUrl: '/static/part/menu.html',
     controller: 'globalCtrl'
   })
   .state('app.cleanup', {
