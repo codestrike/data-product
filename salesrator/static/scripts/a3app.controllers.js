@@ -2,14 +2,21 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('globalCtrl', function($cookies, $http, $rootScope, $scope, $state) {
   $scope.inSession = false;
   $rootScope.inSession = $scope.inSession;
+  $scope.a3file = null; // data about uploaded file
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
   else
     $scope.isCollapsed = false;
 
-  $scope.a3file = null; // data about uploaded file
-  $scope.demoProp = 'demo';
+  if(!angular.isDefined($scope.operations)) {
+    $http.get('/api/operations').success(function(res) {
+      for (var i = res.length - 1; i >= 0; i--) {
+        res[i].name = res[i].operation.replace(/_/g, ' ');
+      };
+      $scope.operations = res;
+    });
+  }
 
   $scope.showSidebar = function(yes) {
     $scope.inSession = yes;
@@ -63,20 +70,27 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('cleanupCtrl', function($scope, $http) {
   console.log('cleanupCtrl');
   $scope.showSidebar(true);
-  if(!angular.isDefined($scope.operations)) {
-    $http.get('/api/operations').success(function(res) {
-      $scope.operations = res;
-    });
+  $scope.selectedOperation = 0;
+  $scope.params = {};
+  $scope.allColumns = [
+    {'name':'q1', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q2', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q3', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q4', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q5', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q6', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q7', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'q8', 'attrone':'something', 'attrtwo':'value of it'}
+    ];
+
+  $scope.resetParams = function() {
+    $scope.params = {};
   }
 
-  $scope.operationsOld = [
-  {'name':'misssing value', 'para':['cols','replace_by']},
-  {'name':'replace value', 'para':['col', 'to_replace', 'replace_by']},
-  {'name':'replace non number', 'para':['cols','replace_by','to_int']},
-  {'name':'replace negative', 'para':['col','delete','replace_by']},
-  {'name':'to upper', 'para':['col']},
-  {'name':'to lower', 'para':['col']}
-  ];
+  $scope.performOperation = function() {
+    console.log($scope.cleanupform.$valid);
+    console.log($scope.selectedOperation, $scope.operations[$scope.selectedOperation]);
+    console.log($scope.params);
+  }
 
-  $scope.selectedOperation = 0;
 });
