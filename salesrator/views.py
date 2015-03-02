@@ -1,4 +1,4 @@
-import os, uuid
+import os, uuid , time
 import shutil
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound
@@ -78,7 +78,7 @@ def handle_file(request):
   paths = t.populate(userid)
   filename = request.POST['csv'].filename
   input_file = request.POST['csv'].file
-  file_path = os.path.join(paths[0], '%s.csv' % userid)
+  file_path = os.path.join(paths[0], '%s.csv' % time.time())
   temp_file_path = file_path + '~'
   input_file.seek(0)
   with open(temp_file_path, 'wb') as output_file:
