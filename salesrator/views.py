@@ -1,4 +1,4 @@
-import os, uuid , time
+import os, uuid, time
 import shutil
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound
@@ -54,13 +54,13 @@ try it again.
 # View for HTML, JS, CSS 
 @view_config(route_name='app', renderer='templates/app.pt', permission='public')
 def load_app(request):
-    return {'title':'Salesrator - Analyze your data'}
+  time.sleep(3)  
+  return {'title':'Salesrator - Analyze your data'}
 
-#list of all the oprations
-@view_config(route_name='oprations', renderer='json', permission='auth')
+#list of all the operations
+@view_config(route_name='operations', renderer='json', permission='auth')
 def operation_list(request):
-  # print cleanup_dict.oprations
-  return cleanup_dict.oprations
+  return cleanup_dict.operations
 
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):

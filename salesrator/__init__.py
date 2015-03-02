@@ -26,7 +26,7 @@ def main(global_config, **settings):
     config.add_route('signup', '/api/signup')
     config.add_route('login', '/api/login')
     config.add_route('loginsuccess', '/api/loginsuccess')
-    config.add_route('oprations','/api/oprations')
+    config.add_route('operations','/api/operations')
     config.add_route('cleanup','/api/cleanup')
     config.add_route('fileupload' ,'/api/fileupload')
     config.add_route('logout', '/logout')
