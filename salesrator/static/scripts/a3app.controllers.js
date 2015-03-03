@@ -121,6 +121,13 @@ angular.module('a3app.controllers', ['ngCookies'])
     console.log($scope.cleanupform.$valid);
     console.log($scope.selectedOperation, $scope.operations[$scope.selectedOperation]);
     console.log($scope.params);
+    var toSend = $scope.operations[$scope.selectedOperation] ;
+    toSend.para = $scope.params;
+
+    $http.post('/api/cleanup',toSend )
+    .success(function(res){
+    	console.log("data sent")
+    });
   }
 
 });
