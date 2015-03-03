@@ -54,7 +54,6 @@ try it again.
 # View for HTML, JS, CSS 
 @view_config(route_name='app', renderer='templates/app.pt', permission='public')
 def load_app(request):
-  time.sleep(3)  
   return {'title':'Salesrator - Analyze your data'}
 
 #list of all the operations
@@ -73,7 +72,7 @@ def cleanup_api(request):
 
 @view_config(route_name='fileupload', renderer='string', permission='auth')
 def handle_file(request):
-  userid = str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash'))
+  userid = str(request.authenticated_userid)
   t = touch()
   paths = t.populate(userid)
   filename = request.POST['csv'].filename
@@ -94,7 +93,7 @@ def try_login(request):
     if not x in data:
       return {'status':'error', 'message':'Insufficient Data'}
   if not auth_user(data['email'], data['passwd']) == False:
-    headers = remember(request, data['email'])
+    headers = remember(request, get_user(email=data['email']).u3id)
     print "LOGIN SUCCESS"
     return HTTPFound(location=request.route_url('loginsuccess'), headers=headers)
   return {'status': 'error', 'message':'Wrong Credentials'}
