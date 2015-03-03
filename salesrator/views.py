@@ -1,6 +1,9 @@
 import os, uuid, time
 import shutil
+from .a3db import *
+from .reader import *
 from pyramid.response import Response
+import cPickle as pickle
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import (
   view_config,
@@ -22,7 +25,7 @@ from pyramid.security import (
 from .a3 import cleanup_dict
 from .a3file import touch
 from .a3user import *
-
+from .doctor import *
 
 
 
@@ -64,26 +67,43 @@ def operation_list(request):
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
   # print request.body
+  userid = str(request.authenticated_userid)
   data= dict(request.json_body)
-  id = data['id']
-  para = data['para']
-  print  id,para
-  return  id,para
+  t = touch()
+  paths = t.populate(userid)
+  id = int(data['id'])
+  para = list(data['para'])
+  d = cleanup_dict()
+  a3db = A3_lib()
+  op = d.operations
+  lastest_file = max(os.listdir(paths[0]))
+  file_path = os.path.join(paths[0],lastest_file)
+  c = readcsv(file_path)
+  para.append(c)
+  print file_path
+  if str(data['operation']) == op[id % 10]['operation'] :
+    res = globals()[data['operation']](*para)
+  return res
+
+
 
 @view_config(route_name='fileupload', renderer='string', permission='auth')
 def handle_file(request):
   userid = str(request.authenticated_userid)
   t = touch()
+  a3db = A3_lib()
   paths = t.populate(userid)
   filename = request.POST['csv'].filename
   input_file = request.POST['csv'].file
-  file_path = os.path.join(paths[0], '%s.csv' % time.time())
+  filename = time.time()
+  # print str(paths[2])
+  file_path = os.path.join(paths[0], '%s.csv' % filename)
   temp_file_path = file_path + '~'
   input_file.seek(0)
   with open(temp_file_path, 'wb') as output_file:
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
-  return Response('OK')
+
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')

@@ -23,7 +23,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
-    if(!$cookies.auth_tkt && toState.name != 'app.login') {
+    if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name !='app.signup') {
       console.log('Permission Denied 403');
       ev.preventDefault();
       $state.go('app.login');
@@ -95,6 +95,13 @@ angular.module('a3app.controllers', ['ngCookies'])
     console.log($scope.cleanupform.$valid);
     console.log($scope.selectedOperation, $scope.operations[$scope.selectedOperation]);
     console.log($scope.params);
+    var toSend = $scope.operations[$scope.selectedOperation] ;
+    toSend.para = $scope.params;
+
+    $http.post('/api/cleanup',toSend )
+    .success(function(res){
+    	console.log("data sent")
+    });
   }
 
 });
