@@ -126,7 +126,6 @@ def handle_file(request):
   DBSession.add(udf)
   print DBSession.query(Udf)
   return Response("OK")
-  
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')
 def try_login(request):
