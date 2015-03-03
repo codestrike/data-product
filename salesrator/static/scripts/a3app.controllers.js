@@ -30,7 +30,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   });
 })
-.controller('loginCtrl', function($scope, $http, $state, $templateCache) {
+.controller('loginCtrl', function($scope, $http, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
   console.log('loginCtrl');
@@ -45,7 +45,11 @@ angular.module('a3app.controllers', ['ngCookies'])
         if(res.status == 'success') {
           $state.go('app.cleanup');
         } else {
-          $scope.email = 'Wrong Credentials';
+          // Show Error Message
+          $scope.errorMessage = 'Wrong Credentials';
+          $timeout(function() {
+            $scope.errorMessage = '';
+          }, 2000);
           $scope.passwd = ''
         }
       });
