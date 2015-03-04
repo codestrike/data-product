@@ -109,10 +109,11 @@ def logout(request):
 
 @view_config(route_name='signup', renderer='json', permission='public')
 def signup_new_user(request):
+  data = dict(request.json_body)
   for x in ['passwd', 'email', 'name']:
-    if not x in request.POST:
+    if not x in data:
       return {'status':'error', 'message':'Insufficient Data'}
   return {
     'status':'success', 
-    'u3id':add_user(request.POST['email'], request.POST['passwd'], request.POST['name'])
+    'u3id':add_user(data['email'], data['passwd'], data['name'])
     }

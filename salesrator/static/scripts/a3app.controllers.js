@@ -55,7 +55,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   };
 })
-.controller('signupCtrl', function($http, $scope) {
+.controller('signupCtrl', function($http, $scope, $timeout) {
   $scope.showSidebar(false);
   $scope.doSignup = function() {
     if($scope.signupform.$valid) {
@@ -64,7 +64,20 @@ angular.module('a3app.controllers', ['ngCookies'])
         email: $scope.email,
         passwd: $scope.passwd
       }).success(function(res) {
-        console.log("SIGNUP SUCCESS", res);
+        if(res.status == 'success') {
+          if(res.u3id != null) {
+            // ACCOUNT CREATED SUCCESSFULLY
+            $scope.displayMessage = 'Account Created.';
+          } else {
+            $scope.displayMessage = 'This Email ID Is Already Used.';
+          }
+        } else {
+          $scope.displayMessage = 'Unable To Create New Account.';
+        }
+
+        $timeout(function() {
+          $scope.displayMessage = ''
+        }, 10000);
       }).error(function(res, status) {
         console.log("SIGNUP FAIL", status, res);
       })
