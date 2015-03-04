@@ -33,7 +33,6 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('loginCtrl', function($scope, $http, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
-  console.log('loginCtrl');
 
   $scope.try_login = function() {
     if($scope.loginform.$valid) {
@@ -73,7 +72,6 @@ angular.module('a3app.controllers', ['ngCookies'])
   }
 })
 .controller('plotCtrl', function($scope) {
-  console.log('plotCtrl');
   $scope.showSidebar(true);
   $scope.imageUrl = '';
   $scope.imageType = null;
@@ -85,7 +83,6 @@ angular.module('a3app.controllers', ['ngCookies'])
   }
 })
 .controller('cleanupCtrl', function($scope, $http) {
-  console.log('cleanupCtrl');
   $scope.showSidebar(true);
   $scope.selectedOperation = 0;
   $scope.params = {};
