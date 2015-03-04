@@ -23,14 +23,14 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
-    if(!$cookies.auth_tkt && toState.name != 'app.login') {
+    if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
       console.log('Permission Denied 403');
       ev.preventDefault();
       $state.go('app.login');
     }
   });
 })
-.controller('loginCtrl', function($scope, $http, $state, $templateCache, $timeout) {
+.controller('loginCtrl', function($http, $scope, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
 
@@ -55,7 +55,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   };
 })
-.controller('signupCtrl', function($scope) {
+.controller('signupCtrl', function($http, $scope) {
   $scope.showSidebar(false);
   $scope.doSignup = function() {
     if($scope.signupform.$valid) {
@@ -82,7 +82,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   }
 })
-.controller('cleanupCtrl', function($scope, $http) {
+.controller('cleanupCtrl', function($http, $scope) {
   $scope.showSidebar(true);
   $scope.selectedOperation = 0;
   $scope.params = {};
