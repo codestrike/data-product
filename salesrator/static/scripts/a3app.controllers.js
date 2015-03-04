@@ -58,6 +58,19 @@ angular.module('a3app.controllers', ['ngCookies'])
 })
 .controller('signupCtrl', function($scope) {
   $scope.showSidebar(false);
+  $scope.doSignup = function() {
+    if($scope.signupform.$valid) {
+      $http.post('/api/signup', {
+        name: $scope.name,
+        email: $scope.email,
+        passwd: $scope.passwd
+      }).success(function(res) {
+        console.log("SIGNUP SUCCESS", res);
+      }).error(function(res, status) {
+        console.log("SIGNUP FAIL", status, res);
+      })
+    }
+  }
 })
 .controller('plotCtrl', function($scope) {
   console.log('plotCtrl');
