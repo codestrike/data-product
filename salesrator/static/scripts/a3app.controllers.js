@@ -49,7 +49,7 @@ angular.module('a3app.controllers', ['ngCookies'])
           $scope.errorMessage = 'Wrong Credentials';
           $timeout(function() {
             $scope.errorMessage = '';
-          }, 2000);
+          }, 5000);
           $scope.passwd = ''
         }
       });
