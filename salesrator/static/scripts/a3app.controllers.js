@@ -23,17 +23,16 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
-    if(!$cookies.auth_tkt && toState.name != 'app.login') {
+    if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
       console.log('Permission Denied 403');
       ev.preventDefault();
       $state.go('app.login');
     }
   });
 })
-.controller('loginCtrl', function($scope, $http, $state, $templateCache, $timeout) {
+.controller('loginCtrl', function($http, $scope, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
-  console.log('loginCtrl');
 
   $scope.try_login = function() {
     if($scope.loginform.$valid) {
@@ -49,18 +48,46 @@ angular.module('a3app.controllers', ['ngCookies'])
           $scope.errorMessage = 'Wrong Credentials';
           $timeout(function() {
             $scope.errorMessage = '';
-          }, 2000);
+          }, 5000);
           $scope.passwd = ''
         }
       });
     }
   };
 })
-.controller('signupCtrl', function($scope) {
+.controller('signupCtrl', function($http, $scope, $timeout) {
   $scope.showSidebar(false);
+  $scope.doSignup = function() {
+    if($scope.signupform.$valid) {
+      $http.post('/api/signup', {
+        name: $scope.name,
+        email: $scope.email,
+        passwd: $scope.passwd
+      }).success(function(res) {
+        if(res.status == 'success') {
+          if(res.u3id != null) {
+            // ACCOUNT CREATED SUCCESSFULLY
+            $scope.displayMessage = 'Account Created.';
+            $timeout(function() {
+              $state.go('app.login');
+            }, 5000);
+          } else {
+            $scope.displayMessage = 'This Email ID Is Already Used.';
+          }
+        } else {
+          $scope.displayMessage = 'Unable To Create New Account.';
+        }
+
+        $timeout(function() {
+          $scope.displayMessage = ''
+        }, 10000);
+      }).error(function(res, status) {
+        console.log("SIGNUP FAIL", status, res);
+      })
+    }
+  }
 })
 .controller('plotCtrl', function($scope) {
-  console.log('plotCtrl');
   $scope.showSidebar(true);
   $scope.imageUrl = '';
   $scope.imageType = null;
@@ -71,8 +98,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   }
 })
-.controller('cleanupCtrl', function($scope, $http) {
-  console.log('cleanupCtrl');
+.controller('cleanupCtrl', function($http, $scope) {
   $scope.showSidebar(true);
   $scope.selectedOperation = 0;
   $scope.params = {};
