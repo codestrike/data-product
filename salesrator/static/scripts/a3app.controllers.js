@@ -68,6 +68,9 @@ angular.module('a3app.controllers', ['ngCookies'])
           if(res.u3id != null) {
             // ACCOUNT CREATED SUCCESSFULLY
             $scope.displayMessage = 'Account Created.';
+            $timeout(function() {
+              $state.go('app.login');
+            }, 5000);
           } else {
             $scope.displayMessage = 'This Email ID Is Already Used.';
           }
