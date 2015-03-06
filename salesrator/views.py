@@ -2,6 +2,7 @@ import os, uuid, time
 import shutil
 from .a3db import *
 from .reader import *
+from .janitor import *
 from pyramid.response import Response
 import cPickle as pickle
 from pyramid.httpexceptions import HTTPFound
@@ -78,7 +79,6 @@ def cleanup_api(request):
   op = d.operations
   lastest_file = max(os.listdir(paths[0]))
   file_path = os.path.join(paths[0],lastest_file)
-  c = readcsv(file_path)
   para.append(c)
   print file_path
   if str(data['operation']) == op[id % 10]['operation'] :
@@ -103,7 +103,10 @@ def handle_file(request):
   with open(temp_file_path, 'wb') as output_file:
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
-
+  c = readcsv(file_path)
+  pickle_path = os.path.join(paths[2], str(int(time.time())))
+  pickle.dump(c,open(pickle_path ,"wb"))
+  return Response("OK")
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')
