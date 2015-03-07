@@ -27,6 +27,9 @@ angular.module('a3app.controllers', ['ngCookies'])
       console.log('Permission Denied 403');
       ev.preventDefault();
       $state.go('app.login');
+    } else if(!!$cookies.auth_tkt && (toState.name == 'app.login' || toState.name == 'app.signup') ) {
+      ev.preventDefault();
+      $state.go('app.dash');
     }
   });
 })
@@ -42,7 +45,7 @@ angular.module('a3app.controllers', ['ngCookies'])
       }).success(function(res) {
         console.log('LOGIN SUCCESS', res);
         if(res.status == 'success') {
-          $state.go('app.cleanup');
+          $state.go('app.dash');
         } else {
           // Show Error Message
           $scope.errorMessage = 'Wrong Credentials';
