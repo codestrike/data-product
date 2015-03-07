@@ -19,6 +19,11 @@ window.a3app.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/static/part/plot.html',
     controller: 'plotCtrl'
   })
+  .state('app.dash', {
+    url: '/dash',
+    templateUrl: '/static/part/dash.html',
+    controller: 'dashCtrl'
+  })
   .state('app.signup', {
     url: '/signup',
     templateUrl: '/static/part/signup.html',

@@ -87,6 +87,11 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   }
 })
+.controller('dashCtrl', function($http, $scope){
+  $scope.showSidebar(true);
+  // TODO: get list of user's files
+  
+})
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
   $scope.imageUrl = '';
