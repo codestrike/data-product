@@ -52,6 +52,6 @@ docs/_build/
 target/
 
 # Database files
-.sqlite
-.csv
-.pickel
+*.sqlite
+*.csv
+*.pickel
