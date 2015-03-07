@@ -9,14 +9,17 @@ angular.module('a3app.controllers', ['ngCookies'])
   else
     $scope.isCollapsed = false;
 
-  if(!angular.isDefined($scope.operations)) {
+  $scope.getOperations = function(callback) {
     $http.get('/api/operations').success(function(res) {
       for (var i = res.length - 1; i >= 0; i--) {
         res[i].name = res[i].operation.replace(/_/g, ' ');
       };
       $scope.operations = res;
+      if (angular.isFunction(callback))
+        callback();
     });
-  }
+  };
+  $scope.getOperations();
 
   $scope.showSidebar = function(yes) {
     $scope.inSession = yes;
@@ -45,7 +48,9 @@ angular.module('a3app.controllers', ['ngCookies'])
       }).success(function(res) {
         console.log('LOGIN SUCCESS', res);
         if(res.status == 'success') {
-          $state.go('app.dash');
+          $scope.getOperations(function() {
+            $state.go('app.dash');
+          });
         } else {
           // Show Error Message
           $scope.errorMessage = 'Wrong Credentials';
