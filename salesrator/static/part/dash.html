@@ -6,9 +6,9 @@
           <li class="list-group-item">
             <form action="/api/fileupload" method="post" accept-charset="utf-8"
             enctype="multipart/form-data">
-            <label for="mp3">Select CSV File To Upload</label>
-            <input id="mp3" name="csv" type="file" value="" />
-            <input type="submit" value="submit" />
+              <label>Select CSV File To Upload</label>
+              <input name="csv" type="file" accept=".csv" value="" />
+              <button type="submit" class="btn btn-lg btn-success" value="submit">Upload</button>
             </form>
           </li>
         </ul>
