@@ -71,7 +71,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     }
   };
 })
-.controller('signupCtrl', function($http, $scope, $timeout) {
+.controller('signupCtrl', function($http, $scope, $state, $timeout) {
   $scope.showSidebar(false);
   $scope.doSignup = function() {
     if($scope.signupform.$valid) {
