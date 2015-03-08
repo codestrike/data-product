@@ -70,11 +70,10 @@ def operation_list(request):
 
 @view_config(route_name='userdata', renderer='json', permission='auth')
 def userdata(request):
-  ops = {'files':get_udf_data, 'user':get_user}
-  to_call = dict(request.json_body)
-  print to_call, 'This Was JSON'
-  if to_call['info']:
-    return ops[to_call['info']](request.authenticated_userid)
+  return {
+    'files':get_udf_data,
+    'user':get_user
+    }[dict(request.json_body)['info']](request.authenticated_userid, to_dict=True)
 
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
