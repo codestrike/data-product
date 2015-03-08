@@ -84,7 +84,9 @@ def cleanup_api(request):
   file_path = os.path.join(paths[0],lastest_file[0])
   # print lastest_file,file_path
   c = readcsv(file_path,0)
+  # appending frame to the dict
   para.update({'frame':c})
+  # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
   	col = '%s.%s'%(c,para['col'])
   	para.update({'col':col})
@@ -97,7 +99,8 @@ def cleanup_api(request):
   # print file_path
   if str(data['operation']) == op[id % 100]['operation'] :
     res = globals()[data['operation']](**para)
-    # res = res.to_json()
+    # res1 = res.to_json()
+    # print res1
   return res
 
 @view_config(route_name='fileupload', renderer='string', permission='auth')
