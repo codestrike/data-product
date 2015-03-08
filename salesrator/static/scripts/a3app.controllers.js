@@ -124,14 +124,14 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.selectedOperation = 0;
   $scope.params = {};
   $scope.allColumns = [
-    {'name':'q1', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q2', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q3', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q4', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q5', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q6', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q7', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q8', 'attrone':'something', 'attrtwo':'value of it'}
+    {'name':'Q1', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q2', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q3', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q4', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q5', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q6', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q7', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q8', 'attrone':'something', 'attrtwo':'value of it'}
     ];
 
   $scope.resetParams = function() {
@@ -142,6 +142,13 @@ angular.module('a3app.controllers', ['ngCookies'])
     console.log($scope.cleanupform.$valid);
     console.log($scope.selectedOperation, $scope.operations[$scope.selectedOperation]);
     console.log($scope.params);
+    var toSend = $scope.operations[$scope.selectedOperation] ;
+    toSend.para = $scope.params;
+
+    $http.post('/api/cleanup',toSend )
+    .success(function(res){
+    	console.log("data sent")
+    });
   }
 
 });

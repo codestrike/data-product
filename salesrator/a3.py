@@ -4,7 +4,7 @@ class cleanup_dict:
 	    {'operation' : 'describe_numeric', 'id' : '101' , 'para' :[]},
 	    {'operation' : 'describe_all', 'id' : '102' , 'para' :[]},
 	    {'operation' : 'describe_categorical', 'id' : '103' , 'para' :[]},
-	    {'operation' : 'get_unique_vals', 'id' : '104' , 'para' :[]},
+	    {'operation' : 'get_unique_vals', 'id' : '104' , 'para' :['col']},
 	    {'operation' : 'num_outliers', 'id' : '105' , 'para' :[]},
 	    {'operation' : 'missing_value', 'id' : '106' , 'para' :['cols' , 'replace_by']},
 	    {'operation' : 'replace_value', 'id' : '107' , 'para' :['to_replace' , 'col' , 'replace_by']},
@@ -23,5 +23,7 @@ class cleanup_dict:
 	    {'operation' : 'string_to_int', 'id' : '1020' , 'para' :['cols']},
 	    {'operation' : 'remove_lower_outlier', 'id' : '1021' , 'para' :['col','lower']},
 	    {'operation' : 'remove_higher_outlier', 'id' : '1022' , 'para' :['col','higher']},
-	    {'operation' : 'delete_col', 'id' : '1023' , 'para' :['group_cols']}
+	    {'operation' : 'delete_col', 'id' : '1023' , 'para' :['group_cols']},
+	    {'operation' : 'rank', 'id' : '1024' , 'para' :['cols']}
 	    ]
+	   

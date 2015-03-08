@@ -17,6 +17,7 @@ from ..models import (
     MyModel,
     Base,
     User,
+    Udf,
     )
 
 
@@ -40,5 +41,8 @@ def main(argv=sys.argv):
     with transaction.manager:
         model = MyModel(name='one', value=1)
         user = User(name='ash', email='cash@ash.ash', u3id=str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash')))
+        udf = Udf(stamp='asdeef', u3id=str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash')))
         DBSession.add(model)
         DBSession.add(user)
+        DBSession.add(udf)
+
