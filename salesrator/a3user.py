@@ -33,6 +33,10 @@ def get_user(u3id=None, email=None):
   elif not email == None:
     return DBSession.query(User).filter(User.email==email).first()
 
+def get_udf_data(u3id):
+  with u3id:
+    return DBSession.query(Udf).filter(Udf.u3id==u3id)
+
 def auth_user(email, plain):
   u = DBSession.query(User).filter(User.email==email).first()
   if not u == None:

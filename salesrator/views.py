@@ -68,6 +68,14 @@ def load_app(request):
 def operation_list(request):
   return cleanup_dict.operations
 
+@view_config(route_name='userdata', renderer='json', permission='auth')
+def userdata(request):
+  ops = {'files':get_udf_data, 'user':get_user}
+  to_call = dict(request.json_body)
+  print to_call, 'This Was JSON'
+  if to_call['info']:
+    return ops[to_call['info']](request.authenticated_userid)
+
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
   # print request.body
