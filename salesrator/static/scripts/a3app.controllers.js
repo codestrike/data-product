@@ -35,6 +35,10 @@ angular.module('a3app.controllers', ['ngCookies'])
         console.log('First Login Allow');
       }
     } else if(!!$cookies.auth_tkt && (toState.name == 'app.login' || toState.name == 'app.signup') ) {
+// =======
+//     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name !='app.signup') {
+//       console.log('Permission Denied 403');
+// >>>>>>> Chore - Function call implemented and tested using datatypes
       ev.preventDefault();
       $state.go('app.dash');
     }
@@ -142,6 +146,13 @@ angular.module('a3app.controllers', ['ngCookies'])
     console.log($scope.cleanupform.$valid);
     console.log($scope.selectedOperation, $scope.operations[$scope.selectedOperation]);
     console.log($scope.params);
+    var toSend = $scope.operations[$scope.selectedOperation] ;
+    toSend.para = $scope.params;
+
+    $http.post('/api/cleanup',toSend )
+    .success(function(res){
+    	console.log("data sent")
+    });
   }
 
 });

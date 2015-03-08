@@ -25,3 +25,4 @@ class cleanup_dict:
 	    {'operation' : 'remove_higher_outlier', 'id' : '1022' , 'para' :['col','higher']},
 	    {'operation' : 'delete_col', 'id' : '1023' , 'para' :['group_cols']}
 	    ]
+	   
