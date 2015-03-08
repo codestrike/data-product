@@ -76,20 +76,29 @@ def cleanup_api(request):
   t = touch()
   paths = t.populate(userid)
   id = int(data['id'])
-  para = list(data['para'])
+  para = dict(data['para'])
   d = cleanup_dict()
   a3db = A3_lib()
   op = d.operations
-  lastest_file = max(os.listdir(paths[0]))
-  file_path = os.path.join(paths[0],lastest_file)
-  c = readcsv(file_path)
-  para.append(c)
-  print file_path
-  if str(data['operation']) == op[id % 10]['operation'] :
-    res = globals()[data['operation']](*para)
+  lastest_file = sorted(os.listdir(paths[0]))
+  file_path = os.path.join(paths[0],lastest_file[0])
+  # print lastest_file,file_path
+  c = readcsv(file_path,0)
+  para.update({'frame':c})
+  if 'col' in para.keys():
+  	col = '%s.%s'%(c,para['col'])
+  	para.update({'col':col})
+  if 'cols' in para.keys():
+  	temp=[]
+  	for x in para['cols']:
+  		x = '%s.%s'%(c,x)
+  		temp.append(x)
+  	para.update({'cols':temp})
+  # print file_path
+  if str(data['operation']) == op[id % 100]['operation'] :
+    res = globals()[data['operation']](**para)
+    # res = res.to_json()
   return res
-
-
 
 @view_config(route_name='fileupload', renderer='string', permission='auth')
 def handle_file(request):
@@ -110,7 +119,7 @@ def handle_file(request):
   c = readcsv(file_path)
   pickle_path = os.path.join(paths[2], '%s.pickel' %filename)
   pickle.dump(c,open(pickle_path ,"wb"))
-  udf = Udf(stamp=filename, u3id=userid, updated_at=datetime.utcnow(), created_at=datetime.utcnow()	)
+  udf = Udf(stamp=filename, u3id=userid, updated_at=datetime.utcnow(), created_at=datetime.utcnow())
   DBSession.add(udf)
   print DBSession.query(Udf)
   return Response("OK")
