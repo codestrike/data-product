@@ -125,7 +125,7 @@ def handle_file(request):
   udf = Udf(stamp=filename, u3id=userid, updated_at=datetime.utcnow(), created_at=datetime.utcnow())
   DBSession.add(udf)
   print DBSession.query(Udf)
-  return {'title':'Salesrator - Analyze your data'}
+  return HTTPFound(location=request.route_url('app'))
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')
