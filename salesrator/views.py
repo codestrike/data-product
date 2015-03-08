@@ -82,6 +82,7 @@ def cleanup_api(request):
   op = d.operations
   lastest_file = max(os.listdir(paths[0]))
   file_path = os.path.join(paths[0],lastest_file)
+  c = readcsv(file_path)
   para.append(c)
   print file_path
   if str(data['operation']) == op[id % 10]['operation'] :
@@ -113,7 +114,7 @@ def handle_file(request):
   DBSession.add(udf)
   print DBSession.query(Udf)
   return Response("OK")
-
+  
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')
 def try_login(request):

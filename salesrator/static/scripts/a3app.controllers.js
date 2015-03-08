@@ -23,7 +23,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
-    if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
+    if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name !='app.signup') {
       console.log('Permission Denied 403');
       ev.preventDefault();
       $state.go('app.login');
