@@ -35,10 +35,6 @@ angular.module('a3app.controllers', ['ngCookies'])
         console.log('First Login Allow');
       }
     } else if(!!$cookies.auth_tkt && (toState.name == 'app.login' || toState.name == 'app.signup') ) {
-// =======
-//     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name !='app.signup') {
-//       console.log('Permission Denied 403');
-// >>>>>>> Chore - Function call implemented and tested using datatypes
       ev.preventDefault();
       $state.go('app.dash');
     }
@@ -128,14 +124,14 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.selectedOperation = 0;
   $scope.params = {};
   $scope.allColumns = [
-    {'name':'q1', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q2', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q3', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q4', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q5', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q6', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q7', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'q8', 'attrone':'something', 'attrtwo':'value of it'}
+    {'name':'Q1', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q2', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q3', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q4', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q5', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q6', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q7', 'attrone':'something', 'attrtwo':'value of it'},
+    {'name':'Q8', 'attrone':'something', 'attrtwo':'value of it'}
     ];
 
   $scope.resetParams = function() {
