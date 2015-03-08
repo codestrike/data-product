@@ -27,18 +27,25 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
-      console.log('Permission Denied 403');
-      ev.preventDefault();
-      $state.go('app.login');
+      if (toPara.fromLogin != 'yes') {
+        console.log('Permission Denied 403');
+        ev.preventDefault();
+        $state.go('app.login');
+      } else {
+        console.log('First Login Allow');
+      }
     } else if(!!$cookies.auth_tkt && (toState.name == 'app.login' || toState.name == 'app.signup') ) {
       ev.preventDefault();
       $state.go('app.dash');
     }
   });
 })
-.controller('loginCtrl', function($http, $scope, $state, $templateCache, $timeout) {
+.controller('loginCtrl', function($cookies, $http, $scope, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
+
+  if($cookies.auth_tkt && $cookies.auth_tkt.length > 0)
+    $state.go('app.dash', {fromLogin:'yes'});
 
   $scope.try_login = function() {
     if($scope.loginform.$valid) {
@@ -49,7 +56,8 @@ angular.module('a3app.controllers', ['ngCookies'])
         console.log('LOGIN SUCCESS', res);
         if(res.status == 'success') {
           $scope.getOperations(function() {
-            $state.go('app.dash');
+            console.log('Login SUCCESS; Redirecting to dash');
+            $state.go('app.dash', {fromLogin:'yes'});
           });
         } else {
           // Show Error Message
