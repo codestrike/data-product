@@ -1,4 +1,5 @@
 import os, uuid, time
+from datetime import datetime
 import shutil
 from .a3db import *
 from .reader import *
@@ -16,6 +17,8 @@ from sqlalchemy.exc import DBAPIError
 from .models import (
     DBSession,
     MyModel,
+    User,
+    Udf,
     )
 
 from pyramid.security import (
@@ -95,7 +98,7 @@ def handle_file(request):
   paths = t.populate(userid)
   filename = request.POST['csv'].filename
   input_file = request.POST['csv'].file
-  filename = time.time()
+  filename = str(time.time())
   # print str(paths[2])
   file_path = os.path.join(paths[0], '%s.csv' % filename)
   temp_file_path = file_path + '~'
@@ -104,8 +107,11 @@ def handle_file(request):
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
   c = readcsv(file_path)
-  pickle_path = os.path.join(paths[2], str(int(time.time())))
+  pickle_path = os.path.join(paths[2], '%s.pickel' %filename)
   pickle.dump(c,open(pickle_path ,"wb"))
+  udf = Udf(stamp=filename, u3id=userid, updated_at=datetime.utcnow(), created_at=datetime.utcnow()	)
+  DBSession.add(udf)
+  print DBSession.query(Udf)
   return Response("OK")
 
 # login, logout, signup

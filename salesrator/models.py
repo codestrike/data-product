@@ -54,3 +54,18 @@ class RootFactory(object):
                 (Allow, 'user:auth', 'auth') ]
     def __init__(self, request):
         pass
+
+class Udf(Base):
+    __tablename__ = 'udf'
+    id = Column(Integer, primary_key=True)
+    u3id = Column(String(SIZE_255))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+    stamp = Column(String(SIZE_255))
+
+    def to_dict(self):
+      return {
+        'updated_at': self.updated_at,
+        'stamp': self.stamp
+      }
+       
