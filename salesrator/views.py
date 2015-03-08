@@ -70,7 +70,7 @@ def cleanup_api(request):
   print  id,para
   return  id,para
 
-@view_config(route_name='fileupload', renderer='string', permission='auth')
+@view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
   userid = str(request.authenticated_userid)
   t = touch()
@@ -83,7 +83,7 @@ def handle_file(request):
   with open(temp_file_path, 'wb') as output_file:
     shutil.copyfileobj(input_file, output_file)
   os.rename(temp_file_path, file_path)
-  return Response('OK')
+  return {'title':'Salesrator - Analyze your data'}
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')

@@ -9,14 +9,17 @@ angular.module('a3app.controllers', ['ngCookies'])
   else
     $scope.isCollapsed = false;
 
-  if(!angular.isDefined($scope.operations)) {
+  $scope.getOperations = function(callback) {
     $http.get('/api/operations').success(function(res) {
       for (var i = res.length - 1; i >= 0; i--) {
         res[i].name = res[i].operation.replace(/_/g, ' ');
       };
       $scope.operations = res;
+      if (angular.isFunction(callback))
+        callback();
     });
-  }
+  };
+  $scope.getOperations();
 
   $scope.showSidebar = function(yes) {
     $scope.inSession = yes;
@@ -24,15 +27,25 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
-      console.log('Permission Denied 403');
+      if (toPara.fromLogin != 'yes') {
+        console.log('Permission Denied 403');
+        ev.preventDefault();
+        $state.go('app.login');
+      } else {
+        console.log('First Login Allow');
+      }
+    } else if(!!$cookies.auth_tkt && (toState.name == 'app.login' || toState.name == 'app.signup') ) {
       ev.preventDefault();
-      $state.go('app.login');
+      $state.go('app.dash');
     }
   });
 })
-.controller('loginCtrl', function($http, $scope, $state, $templateCache, $timeout) {
+.controller('loginCtrl', function($cookies, $http, $scope, $state, $templateCache, $timeout) {
   $templateCache.removeAll();
   $scope.showSidebar(false);
+
+  if($cookies.auth_tkt && $cookies.auth_tkt.length > 0)
+    $state.go('app.dash', {fromLogin:'yes'});
 
   $scope.try_login = function() {
     if($scope.loginform.$valid) {
@@ -42,7 +55,10 @@ angular.module('a3app.controllers', ['ngCookies'])
       }).success(function(res) {
         console.log('LOGIN SUCCESS', res);
         if(res.status == 'success') {
-          $state.go('app.cleanup');
+          $scope.getOperations(function() {
+            console.log('Login SUCCESS; Redirecting to dash');
+            $state.go('app.dash', {fromLogin:'yes'});
+          });
         } else {
           // Show Error Message
           $scope.errorMessage = 'Wrong Credentials';
@@ -86,6 +102,11 @@ angular.module('a3app.controllers', ['ngCookies'])
       })
     }
   }
+})
+.controller('dashCtrl', function($http, $scope){
+  $scope.showSidebar(true);
+  // TODO: get list of user's files
+  
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
