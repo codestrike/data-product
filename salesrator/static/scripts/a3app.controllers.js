@@ -113,7 +113,6 @@ angular.module('a3app.controllers', ['ngCookies'])
   $http.post('/api/userdata', {
     info: 'files'
   }).success(function(res) {
-    console.log('DATA FROM USER FILES', res);
     $scope.setA3files(res);
   }).error(function(res, sta) {
     console.error(sta, res);
