@@ -27,7 +27,7 @@ from pyramid.security import (
     )
 
 from .a3 import cleanup_dict
-from .a3file import touch
+from .a3file import *
 from .a3user import *
 from .doctor import *
 
@@ -133,6 +133,15 @@ def handle_file(request):
   DBSession.add(udf)
   print DBSession.query(Udf)
   return HTTPFound(location=request.route_url('app'))
+
+@view_config(route_name='fileupdate', renderer='json')
+def update_or_delete_file(request):
+  data = dict(request.json_body)
+  return {
+    #'rename': set_pretty_name,
+    'remove': delete_file,
+    'reset': recreate_pickel_for
+  }[data['operation']](u3id=request.authenticated_userid, stamp=data['stamp'])
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')

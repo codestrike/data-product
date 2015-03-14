@@ -1,4 +1,21 @@
 import os
+from datetime import datetime
+from sqlalchemy import *
+
+from sqlalchemy.ext.declarative import declarative_base
+
+from sqlalchemy.orm import (
+    scoped_session,
+    sessionmaker,
+    )
+
+from zope.sqlalchemy import ZopeTransactionExtension
+
+from .models import *
+from .a3user import *
+
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+Base = declarative_base()
 
 class touch:
   def touchdir(self, to_touch):
@@ -20,6 +37,10 @@ class touch:
       self.touchdir(x)
     return paths
 
+# functions to handle udf
+def delete_file(u3id, stamp):
+  print DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
+  return {'status':'success'}
 
-
-
+def recreate_pickel_for(u3id, stamp):
+  pass

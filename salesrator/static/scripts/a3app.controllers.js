@@ -110,13 +110,30 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
   // TODO: get list of user's files
-  $http.post('/api/userdata', {
-    info: 'files'
-  }).success(function(res) {
-    $scope.setA3files(res);
-  }).error(function(res, sta) {
-    console.error(sta, res);
-  });
+
+  $scope.reFetchFilesData = function() {
+    $http.post('/api/userdata', {
+      info: 'files'
+    }).success(function(res) {
+      $scope.setA3files(res);
+    }).error(function(res, sta) {
+      console.error(sta, res);
+    });
+  };
+
+  $scope.reFetchFilesData();
+  
+  $scope.updateFile = function(operation, stamp) {
+    $http.post('/api/fileupdate', {
+      'operation': operation,
+      'stamp': stamp
+    }).success(function(res) {
+      console.log(res);
+      $scope.reFetchFilesData();
+    }).error(function(res, sta) {
+      console.error(sta, res);
+    });
+  };
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);

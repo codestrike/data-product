@@ -30,6 +30,7 @@ def main(global_config, **settings):
     config.add_route('cleanup','/api/cleanup')
     config.add_route('userdata', '/api/userdata')
     config.add_route('fileupload' ,'/api/fileupload')
+    config.add_route('fileupdate', '/api/fileupdate')
     config.add_route('logout', '/logout')
     config.add_route('home', '/home')
     config.add_route('app', '/')
