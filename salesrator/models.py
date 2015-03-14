@@ -65,7 +65,7 @@ class Udf(Base):
 
     def to_dict(self):
       return {
-        'updated_at': self.updated_at,
+        'updated_at': str(self.updated_at),
         'stamp': self.stamp
       }
        
