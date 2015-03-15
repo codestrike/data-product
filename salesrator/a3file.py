@@ -44,3 +44,7 @@ def delete_file(u3id, stamp):
 
 def recreate_pickel_for(u3id, stamp):
   pass
+
+def get_udf_data(u3id, to_dict=False):
+  result = DBSession.query(Udf).filter(Udf.u3id==u3id).all()
+  return result if not to_dict else [x.to_dict() for x in result if len(result)>0]

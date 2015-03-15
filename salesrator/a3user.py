@@ -34,10 +34,6 @@ def get_user(u3id=None, email=None, to_dict=False):
     result = DBSession.query(User).filter(User.email==email).first()
   return result if not to_dict else result.to_dict()
 
-def get_udf_data(u3id, to_dict=False):
-  result = DBSession.query(Udf).filter(Udf.u3id==u3id).all()
-  return result if not to_dict else [x.to_dict() for x in result if len(result)>0]
-
 def auth_user(email, plain):
   u = DBSession.query(User).filter(User.email==email).first()
   if not u == None:
