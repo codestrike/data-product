@@ -4,7 +4,7 @@
       <div class="col-md-4 col-md-offset-4">
         <h2>Your Files</h2>
         <ul class="list-group">
-          <li class="list-group-item" ng-repeat="f in a3files">
+          <li class="list-group-item" ng-repeat="f in a3files" ng-click="updateFile('set', f.stamp)">
             <button class="btn btn-danger btn-sm pull-right" ng-click="updateFile('remove', f.stamp)">Delete</button>
             <h3>{{f.stamp}}</h3>
             <p class="text-muted">Updated At {{f.updated_at}}</p>

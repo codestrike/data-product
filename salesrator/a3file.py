@@ -38,7 +38,7 @@ class touch:
     return paths
 
 # functions to handle udf
-def delete_file(u3id, stamp):
+def delete_udf(u3id, stamp):
   print DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
   return {'status':'success'}
 

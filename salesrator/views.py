@@ -139,8 +139,9 @@ def update_or_delete_file(request):
   data = dict(request.json_body)
   return {
     #'rename': set_pretty_name,
-    'remove': delete_file,
-    'reset': recreate_pickel_for
+    'remove': delete_udf,
+    'reset': recreate_pickel_for,
+    'set': set_working_udf_to
   }[data['operation']](u3id=request.authenticated_userid, stamp=data['stamp'])
 
 # login, logout, signup

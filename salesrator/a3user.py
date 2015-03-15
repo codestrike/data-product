@@ -34,6 +34,12 @@ def get_user(u3id=None, email=None, to_dict=False):
     result = DBSession.query(User).filter(User.email==email).first()
   return result if not to_dict else result.to_dict()
 
+def set_working_udf_to(u3id, stamp):
+  user = get_user(u3id)
+  user.stamp = stamp
+  # DBSession.commit()
+  return {'status':'success'}
+
 def auth_user(email, plain):
   u = DBSession.query(User).filter(User.email==email).first()
   if not u == None:
