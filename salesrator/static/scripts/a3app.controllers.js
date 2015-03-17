@@ -151,16 +151,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.showSidebar(true);
   $scope.selectedOperation = 0;
   $scope.params = {};
-  $scope.allColumns = [
-    {'name':'Q1', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q2', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q3', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q4', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q5', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q6', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q7', 'attrone':'something', 'attrtwo':'value of it'},
-    {'name':'Q8', 'attrone':'something', 'attrtwo':'value of it'}
-    ];
+  $scope.allColumns = [];
 
   $scope.resetParams = function() {
     $scope.params = {};
@@ -179,4 +170,34 @@ angular.module('a3app.controllers', ['ngCookies'])
     });
   };
 
+  $scope.getCurrrentStatus = function() {
+    console.log($scope.operations, 'toSend o');
+    if (!$scope.operations) return;
+
+    var toSend = {};
+    for (var i = $scope.operations.length - 1; i>=0; i--) {
+      var o = $scope.operations[i];
+      console.log(o.operation, toSend, 'toSend');
+      if (o.operation === 'describe_all') {
+        toSend = o;
+        break;
+      }
+    }
+
+    if (toSend === {}) return;
+
+    toSend.para = {};
+    $http.post('/api/cleanup', toSend)
+    .success(function(res) {
+      console.log(res);
+      angular.forEach(res, function(value, key) {
+        this.push({
+          name: key,
+          attrs: value
+        });
+      }, $scope.allColumns);
+    });
+  };
+
+  $scope.getCurrrentStatus();
 });
