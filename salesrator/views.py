@@ -87,8 +87,8 @@ def cleanup_api(request):
   para.update({'frame':dataframe})
   # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
-    col = '%s.%s' % (dataframe, para['col'])
-    para.update({'col':col})
+    # col = '%s.%s' % (dataframe, para['col'])
+    para.update({'col':para['col']})
   if 'cols' in para.keys():
     temp = []
     for x in para['cols']:
@@ -99,7 +99,9 @@ def cleanup_api(request):
   if str(data['operation']) == cleanup_dict().operations[operation_id % 100]['operation']:
     res = globals()[data['operation']](**para)
     print res
-  return dict(json.loads(res.to_json()))
+  print "\n\n\nGoing To Print Describe All on Data Frame\n\n"
+  print describe_all(dataframe)
+  return dict(json.loads(describe_all(dataframe).to_json()))
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
