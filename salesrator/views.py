@@ -1,4 +1,4 @@
-import os, uuid, time, json
+import os, time, json
 from datetime import datetime
 import shutil
 from .a3db import *
