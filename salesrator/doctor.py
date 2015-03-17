@@ -12,7 +12,8 @@ def describe_numeric(frame):
 
 #Returns Data for Each Column of DataFrame in form of count,unique,top,mean,min,max,freq,25%,50%,75%
 def describe_all(frame):
-	return frame.describe(include=['all'])
+	# return frame.describe(include=['all'])
+	return frame.describe()
 
 
 #Returns Data from DataFrame if any Column present in Categorial Format
