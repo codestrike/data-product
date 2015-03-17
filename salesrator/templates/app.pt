@@ -18,17 +18,6 @@
 <body>
   <div id="wrapper">
     <div ui-view></div>
-    <div>
-      <form action="/api/fileupload" method="post" accept-charset="utf-8"
-      enctype="multipart/form-data">
-
-    <label for="mp3">Mp3</label>
-    <input id="mp3" name="csv" type="file" value="" />
-
-    <input type="submit" value="submit" />
-</form>
-
-    </div>
   </div>
 </body>
 </html>
