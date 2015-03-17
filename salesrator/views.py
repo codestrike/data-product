@@ -1,4 +1,4 @@
-import os, uuid, time
+import os, uuid, time, json
 from datetime import datetime
 import shutil
 from .a3db import *
@@ -77,21 +77,13 @@ def userdata(request):
 
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
-  # print request.body
   userid = str(request.authenticated_userid)
   data= dict(request.json_body)
-  t = touch()
-  paths = t.populate(userid)
-  id = int(data['id'])
-  para = dict(data['para'])
-  d = cleanup_dict()
-  a3db = A3_lib()
-  op = d.operations
-  lastest_file = sorted(os.listdir(paths[0]))
-  file_path = os.path.join(paths[0],lastest_file[0])
-  # print lastest_file,file_path
-  c = readcsv(file_path,0)
-  # appending frame to the dict
+  paths = touch().populate(userid)
+  (id, para) = (int(data['id']), dict(data['para']))
+  c = readcsv( os.path.join(paths[0],
+    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
+    0)
   para.update({'frame':c})
   # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
@@ -103,12 +95,11 @@ def cleanup_api(request):
   		x = '%s.%s'%(c,x)
   		temp.append(x)
   	para.update({'cols':temp})
-  # print file_path
-  if str(data['operation']) == op[id % 100]['operation'] :
+  res = None
+  if str(data['operation']) == cleanup_dict().operations[id % 100]['operation'] :
     res = globals()[data['operation']](**para)
-    # res1 = res.to_json()
-    # print res1
-  return res
+    print res
+  return dict(json.loads(res.to_json()))
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
