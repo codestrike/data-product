@@ -141,9 +141,18 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
 
-  $scope.fetchFilesData = function() {
+  $scope.fetchFilesData = function(callback) {
     $scope.fetchData('files', function(res) {
       $scope.setA3files(res);
+      if (angular.isFunction(callback)) 
+        callback(res);
+    });
+  };
+
+  $scope.fetchUserData = function() {
+    $scope.fetchData('user', function(res) {
+      console.log('USER DATA FETCHED', res);
+      $scope.setStamp(res.stamp);
     });
   };
   
@@ -157,10 +166,7 @@ angular.module('a3app.controllers', ['ngCookies'])
       if (operation === 'set') {
         $scope.setStamp(stamp);
       } else if (operation === 'remove') {
-        $scope.fetchData('user', function(res) {
-          console.log('USER DATA FETCHED', res);
-          $scope.setStamp(res.stamp);
-        });
+        $scope.fetchUserData();
       }
     }).error(function(res, sta) {
       console.error(sta, res);
@@ -168,7 +174,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   // call initialization functions
-  $scope.fetchFilesData();
+  $scope.fetchFilesData($scope.fetchUserData);
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
