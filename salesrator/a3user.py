@@ -40,6 +40,11 @@ def set_working_udf_to(u3id, stamp):
   # DBSession.commit()
   return {'status':'success'}
 
+def auto_correct_stamp_for(u3id, stamp_of_deleted_udf):
+  user = get_user(u3id)
+  if user.stamp == stamp_of_deleted_udf:
+    set_working_udf_to(u3id, stamp=None)
+
 def auth_user(email, plain):
   u = DBSession.query(User).filter(User.email==email).first()
   if not u == None:

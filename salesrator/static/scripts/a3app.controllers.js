@@ -6,6 +6,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   $rootScope.inSession = $scope.inSession;
   $scope.a3files = null; // data about uploaded file
   $scope.selectedStamp = null;
+  $scope.allColumns = [];
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
@@ -18,6 +19,19 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $scope.setStamp = function(stamp) {
     $scope.selectedStamp = stamp;
+    $scope.$broadcast('a3optionsAvailabel');
+  };
+
+  $scope.fetchData= function(dataToFetch, callback) {
+    $http.post('/api/userdata', {
+      info: dataToFetch
+    }).success(function(res) {
+      if (angular.isFunction(callback)) {
+        callback(res);
+      }
+    }).error(function(res, sta) {
+      console.error(sta, res);
+    });
   };
 
   $scope.getOperations = function(callback) {
@@ -31,12 +45,19 @@ angular.module('a3app.controllers', ['ngCookies'])
       $scope.$broadcast('a3optionsAvailabel');
     });
   };
-  $scope.getOperations();
 
   $scope.showSidebar = function(yes) {
     $scope.inSession = yes;
   };
 
+  // call initialization functions
+  $scope.getOperations();
+
+  $scope.fetchData('user', function(res) {
+    $scope.setStamp(res.stamp);
+  });
+
+  // event listeners
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara) {
     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
       if (toPara.fromLogin != 'yes') {
@@ -118,15 +139,9 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
 
-  $scope.fetchData= function(dataToFetch, callback) {
-    $http.post('/api/userdata', {
-      info: dataToFetch
-    }).success(function(res) {
-      if (angular.isFunction(callback)) {
-        callback(res);
-      }
-    }).error(function(res, sta) {
-      console.error(sta, res);
+  $scope.fetchFilesData = function() {
+    $scope.fetchData('files', function(res) {
+      $scope.setA3files(res);
     });
   };
   
@@ -134,26 +149,24 @@ angular.module('a3app.controllers', ['ngCookies'])
     $http.post('/api/fileupdate', {
       'operation': operation,
       'stamp': stamp
-    }).success(function(res) {
-      $scope.fetchData('files', function(res) {
-        $scope.setA3files(res);
-      });
+    }).success(function() {
+      $scope.fetchFilesData();
 
       if (operation === 'set') {
         $scope.setStamp(stamp);
+      } else if (operation === 'remove') {
+        $scope.fetchData('user', function(res) {
+          console.log('USER DATA FETCHED', res);
+          $scope.setStamp(res.stamp);
+        });
       }
     }).error(function(res, sta) {
       console.error(sta, res);
     });
   };
 
-  $scope.fetchData('files', function(res) {
-    $scope.setA3files(res);
-  });
-
-  $scope.fetchData('user', function(res) {
-    $scope.setStamp(res.stamp);
-  });
+  // call initialization functions
+  $scope.fetchFilesData();
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
@@ -170,7 +183,6 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.showSidebar(true);
   $scope.selectedOperation = 0;
   $scope.params = {};
-  $scope.allColumns = [];
 
   $scope.resetParams = function() {
     $scope.params = {};
