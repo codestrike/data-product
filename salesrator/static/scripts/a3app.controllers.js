@@ -1,3 +1,5 @@
+/* global angular */
+
 angular.module('a3app.controllers', ['ngCookies'])
 .controller('globalCtrl', function($cookies, $http, $rootScope, $scope, $state) {
   $scope.inSession = false;
@@ -17,7 +19,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     $http.get('/api/operations').success(function(res) {
       for (var i = res.length - 1; i >= 0; i--) {
         res[i].name = res[i].operation.replace(/_/g, ' ');
-      };
+      }
       $scope.operations = res;
       if (angular.isFunction(callback))
         callback();
@@ -29,7 +31,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     $scope.inSession = yes;
   };
 
-  $rootScope.$on('$stateChangeStart', function(ev, toState, toPara, fromState) {
+  $rootScope.$on('$stateChangeStart', function(ev, toState, toPara) {
     if(!$cookies.auth_tkt && toState.name != 'app.login' && toState.name != 'app.signup') {
       if (toPara.fromLogin != 'yes') {
         console.log('Permission Denied 403');
@@ -51,7 +53,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   if($cookies.auth_tkt && $cookies.auth_tkt.length > 0)
     $state.go('app.dash', {fromLogin:'yes'});
 
-  $scope.try_login = function() {
+  $scope.tryLogin = function() {
     if($scope.loginform.$valid) {
       $http.post('/api/login', {
         email: $scope.email,
@@ -69,7 +71,7 @@ angular.module('a3app.controllers', ['ngCookies'])
           $timeout(function() {
             $scope.errorMessage = '';
           }, 5000);
-          $scope.passwd = ''
+          $scope.passwd = '';
         }
       });
     }
@@ -99,17 +101,16 @@ angular.module('a3app.controllers', ['ngCookies'])
         }
 
         $timeout(function() {
-          $scope.displayMessage = ''
+          $scope.displayMessage = '';
         }, 10000);
       }).error(function(res, status) {
-        console.log("SIGNUP FAIL", status, res);
-      })
+        console.log('SIGNUP FAIL', status, res);
+      });
     }
-  }
+  };
 })
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
-  // TODO: get list of user's files
 
   $scope.reFetchFilesData = function() {
     $http.post('/api/userdata', {
@@ -144,7 +145,7 @@ angular.module('a3app.controllers', ['ngCookies'])
     if($scope.imageType != imageType) {
       // $http.get() TODO
     }
-  }
+  };
 })
 .controller('cleanupCtrl', function($http, $scope) {
   $scope.showSidebar(true);
@@ -163,7 +164,7 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $scope.resetParams = function() {
     $scope.params = {};
-  }
+  };
 
   $scope.performOperation = function() {
     console.log($scope.cleanupform.$valid);
@@ -174,8 +175,8 @@ angular.module('a3app.controllers', ['ngCookies'])
 
     $http.post('/api/cleanup',toSend )
     .success(function(res){
-    	console.log("data sent")
+    	console.log(res);
     });
-  }
+  };
 
 });
