@@ -5,6 +5,7 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.inSession = false;
   $rootScope.inSession = $scope.inSession;
   $scope.a3files = null; // data about uploaded file
+  $scope.selectedStamp = null;
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
@@ -13,6 +14,10 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $scope.setA3files = function(filesList) {
     $scope.a3files = filesList;
+  };
+
+  $scope.setStamp = function(stamp) {
+    $scope.selectedStamp = stamp;
   };
 
   $scope.getOperations = function(callback) {
@@ -113,29 +118,42 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
 
-  $scope.reFetchFilesData = function() {
+  $scope.fetchData= function(dataToFetch, callback) {
     $http.post('/api/userdata', {
-      info: 'files'
+      info: dataToFetch
     }).success(function(res) {
-      $scope.setA3files(res);
+      if (angular.isFunction(callback)) {
+        callback(res);
+      }
     }).error(function(res, sta) {
       console.error(sta, res);
     });
   };
-
-  $scope.reFetchFilesData();
   
   $scope.updateFile = function(operation, stamp) {
     $http.post('/api/fileupdate', {
       'operation': operation,
       'stamp': stamp
     }).success(function(res) {
-      console.log(res);
-      $scope.reFetchFilesData();
+      $scope.fetchData('files', function(res) {
+        $scope.setA3files(res);
+      });
+
+      if (operation === 'set') {
+        $scope.setStamp(stamp);
+      }
     }).error(function(res, sta) {
       console.error(sta, res);
     });
   };
+
+  $scope.fetchData('files', function(res) {
+    $scope.setA3files(res);
+  });
+
+  $scope.fetchData('user', function(res) {
+    $scope.setStamp(res.stamp);
+  });
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
@@ -172,13 +190,11 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   $scope.getCurrrentStatus = function() {
-    console.log($scope.operations, 'toSend o');
     if (!$scope.operations) return;
 
     var toSend = {};
     for (var i = $scope.operations.length - 1; i>=0; i--) {
       var o = $scope.operations[i];
-      console.log(o.operation, toSend, 'toSend');
       if (o.operation === 'describe_all') {
         toSend = o;
         break;
