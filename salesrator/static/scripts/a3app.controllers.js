@@ -51,11 +51,13 @@ angular.module('a3app.controllers', ['ngCookies'])
   };
 
   // call initialization functions
-  $scope.getOperations();
+  if($cookies.auth_tkt) {
+    $scope.getOperations();
 
-  $scope.fetchData('user', function(res) {
-    $scope.setStamp(res.stamp);
-  });
+    $scope.fetchData('user', function(res) {
+      $scope.setStamp(res.stamp);
+    });
+  }
 
   // event listeners
   $rootScope.$on('$stateChangeStart', function(ev, toState, toPara) {
@@ -203,6 +205,8 @@ angular.module('a3app.controllers', ['ngCookies'])
 
   $scope.getCurrrentStatus = function() {
     if (!$scope.operations) return;
+    if ($scope.allColumns === 'working') return;
+    $scope.allColumns = 'working';
 
     var toSend = {};
     for (var i = $scope.operations.length - 1; i>=0; i--) {
@@ -213,12 +217,12 @@ angular.module('a3app.controllers', ['ngCookies'])
       }
     }
 
-    if (toSend === {}) return;
+    // if (toSend === {}) return;
 
     toSend.para = {};
     $http.post('/api/cleanup', toSend)
     .success(function(res) {
-      console.log(res);
+      $scope.allColumns = [];
       angular.forEach(res, function(value, key) {
         this.push({
           name: key,
@@ -226,7 +230,11 @@ angular.module('a3app.controllers', ['ngCookies'])
         });
       }, $scope.allColumns);
     });
+
   };
+
+  // call initialization functions
+  $scope.getCurrrentStatus();
 
   $scope.$on('a3optionsAvailabel', $scope.getCurrrentStatus);
 });
