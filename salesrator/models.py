@@ -38,13 +38,15 @@ class User(Base):
     u3id = Column(String(SIZE_255))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow)
+    stamp = Column(String(SIZE_255), nullable=True)
     acti_tkn = Column(String(SIZE_255), nullable=True)
 
     def to_dict(self):
       return {
         'name': self.name,
         'email': self.email,
-        'u3id': self.u3id
+        'u3id': self.u3id,
+        'stamp': self.stamp
       }
 
 Index('my_index_e', User.email, unique=True, mysql_length=SIZE_255)
@@ -65,7 +67,7 @@ class Udf(Base):
 
     def to_dict(self):
       return {
-        'updated_at': self.updated_at,
+        'updated_at': str(self.updated_at),
         'stamp': self.stamp
       }
        

@@ -26,12 +26,19 @@ def add_user(email, plain, name):
   DBSession.add(User(email=email, passhash=hashlib.sha1(plain).hexdigest(), name=name, u3id=u3id))
   return u3id
 
-def get_user(u3id=None, email=None):
-  by = u3id if u3id==None else email
+def get_user(u3id=None, email=None, to_dict=False):
+  result = None
   if not u3id == None:
-    return DBSession.query(User).filter(User.u3id==u3id).first()
+    result = DBSession.query(User).filter(User.u3id==u3id).first()
   elif not email == None:
-    return DBSession.query(User).filter(User.email==email).first()
+    result = DBSession.query(User).filter(User.email==email).first()
+  return result if not to_dict else result.to_dict()
+
+def set_working_udf_to(u3id, stamp):
+  user = get_user(u3id)
+  user.stamp = stamp
+  # DBSession.commit()
+  return {'status':'success'}
 
 def auth_user(email, plain):
   u = DBSession.query(User).filter(User.email==email).first()

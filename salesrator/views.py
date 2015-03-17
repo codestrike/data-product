@@ -1,4 +1,4 @@
-import os, uuid, time
+import os, uuid, time, json
 from datetime import datetime
 import shutil
 from .a3db import *
@@ -27,7 +27,7 @@ from pyramid.security import (
     )
 
 from .a3 import cleanup_dict
-from .a3file import touch
+from .a3file import *
 from .a3user import *
 from .doctor import *
 
@@ -68,23 +68,22 @@ def load_app(request):
 def operation_list(request):
   return cleanup_dict.operations
 
+@view_config(route_name='userdata', renderer='json', permission='auth')
+def userdata(request):
+  return {
+    'files':get_udf_data,
+    'user':get_user
+    }[dict(request.json_body)['info']](request.authenticated_userid, to_dict=True)
+
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
-  # print request.body
   userid = str(request.authenticated_userid)
   data= dict(request.json_body)
-  t = touch()
-  paths = t.populate(userid)
-  id = int(data['id'])
-  para = dict(data['para'])
-  d = cleanup_dict()
-  a3db = A3_lib()
-  op = d.operations
-  lastest_file = sorted(os.listdir(paths[0]))
-  file_path = os.path.join(paths[0],lastest_file[0])
-  # print lastest_file,file_path
-  c = readcsv(file_path,0)
-  # appending frame to the dict
+  paths = touch().populate(userid)
+  (id, para) = (int(data['id']), dict(data['para']))
+  c = readcsv( os.path.join(paths[0],
+    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
+    0)
   para.update({'frame':c})
   # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
@@ -96,12 +95,11 @@ def cleanup_api(request):
   		x = '%s.%s'%(c,x)
   		temp.append(x)
   	para.update({'cols':temp})
-  # print file_path
-  if str(data['operation']) == op[id % 100]['operation'] :
+  res = None
+  if str(data['operation']) == cleanup_dict().operations[id % 100]['operation'] :
     res = globals()[data['operation']](**para)
-    # res1 = res.to_json()
-    # print res1
-  return res
+    print res
+  return dict(json.loads(res.to_json()))
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
@@ -126,6 +124,16 @@ def handle_file(request):
   DBSession.add(udf)
   print DBSession.query(Udf)
   return HTTPFound(location=request.route_url('app'))
+
+@view_config(route_name='fileupdate', renderer='json')
+def update_or_delete_file(request):
+  data = dict(request.json_body)
+  return {
+    #'rename': set_pretty_name,
+    'remove': delete_udf,
+    'reset': recreate_pickel_for,
+    'set': set_working_udf_to
+  }[data['operation']](u3id=request.authenticated_userid, stamp=data['stamp'])
 
 # login, logout, signup
 @view_config(route_name='login', renderer='json', permission='public')

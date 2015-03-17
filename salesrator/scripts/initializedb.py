@@ -40,7 +40,7 @@ def main(argv=sys.argv):
     Base.metadata.create_all(engine)
     with transaction.manager:
         model = MyModel(name='one', value=1)
-        user = User(name='ash', email='cash@ash.ash', u3id=str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash')))
+        user = User(name='asha', email='cash@ash.asha', stamp='777', u3id=str(uuid.uuid3(uuid.NAMESPACE_URL, 'asha')))
         udf = Udf(stamp='asdeef', u3id=str(uuid.uuid3(uuid.NAMESPACE_URL, 'ash')))
         DBSession.add(model)
         DBSession.add(user)

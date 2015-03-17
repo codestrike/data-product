@@ -2,12 +2,16 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('globalCtrl', function($cookies, $http, $rootScope, $scope, $state) {
   $scope.inSession = false;
   $rootScope.inSession = $scope.inSession;
-  $scope.a3file = null; // data about uploaded file
+  $scope.a3files = null; // data about uploaded file
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
   else
     $scope.isCollapsed = false;
+
+  $scope.setA3files = function(filesList) {
+    $scope.a3files = filesList;
+  };
 
   $scope.getOperations = function(callback) {
     $http.get('/api/operations').success(function(res) {
@@ -106,7 +110,30 @@ angular.module('a3app.controllers', ['ngCookies'])
 .controller('dashCtrl', function($http, $scope){
   $scope.showSidebar(true);
   // TODO: get list of user's files
+
+  $scope.reFetchFilesData = function() {
+    $http.post('/api/userdata', {
+      info: 'files'
+    }).success(function(res) {
+      $scope.setA3files(res);
+    }).error(function(res, sta) {
+      console.error(sta, res);
+    });
+  };
+
+  $scope.reFetchFilesData();
   
+  $scope.updateFile = function(operation, stamp) {
+    $http.post('/api/fileupdate', {
+      'operation': operation,
+      'stamp': stamp
+    }).success(function(res) {
+      console.log(res);
+      $scope.reFetchFilesData();
+    }).error(function(res, sta) {
+      console.error(sta, res);
+    });
+  };
 })
 .controller('plotCtrl', function($scope) {
   $scope.showSidebar(true);
