@@ -17,7 +17,7 @@ from .a3user import *
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
-class touch:
+class touch(object):
   def touchdir(self, to_touch):
     # temp_path = os.path.join(to_touch, extenstion)
     if not os.path.exists(to_touch):

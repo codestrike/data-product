@@ -15,16 +15,16 @@ from pyramid.view import (
 from sqlalchemy.exc import DBAPIError
 
 from .models import (
-    DBSession,
-    MyModel,
-    User,
-    Udf,
-    )
+  DBSession,
+  MyModel,
+  User,
+  Udf,
+  )
 
 from pyramid.security import (
-    remember,
-    forget,
-    )
+  remember,
+  forget,
+  )
 
 from .a3 import cleanup_dict
 from .a3file import *
@@ -35,11 +35,11 @@ from .doctor import *
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
 def my_view(request):
-    try:
-        one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'tutorial'}
+  try:
+    one = DBSession.query(MyModel).filter(MyModel.name == 'one').first()
+  except DBAPIError:
+    return Response(conn_err_msg, content_type='text/plain', status_int=500)
+  return {'one': one, 'project': 'tutorial'}
 
 
 conn_err_msg = """\
@@ -78,25 +78,25 @@ def userdata(request):
 @view_config(route_name='cleanup', renderer='json', permission='auth')
 def cleanup_api(request):
   userid = str(request.authenticated_userid)
-  data= dict(request.json_body)
+  data = dict(request.json_body)
   paths = touch().populate(userid)
-  (id, para) = (int(data['id']), dict(data['para']))
-  c = readcsv( os.path.join(paths[0],
+  (operation_id, para) = (int(data['id']), dict(data['para']))
+  dataframe = readcsv(os.path.join(paths[0],
     get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
     0)
-  para.update({'frame':c})
+  para.update({'frame':dataframe})
   # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
-  	col = '%s.%s'%(c,para['col'])
-  	para.update({'col':col})
+    col = '%s.%s' % (dataframe, para['col'])
+    para.update({'col':col})
   if 'cols' in para.keys():
-  	temp=[]
-  	for x in para['cols']:
-  		x = '%s.%s'%(c,x)
-  		temp.append(x)
-  	para.update({'cols':temp})
+    temp = []
+    for x in para['cols']:
+      x = '%s.%s'%(dataframe, x)
+      temp.append(x)
+    para.update({'cols':temp})
   res = None
-  if str(data['operation']) == cleanup_dict().operations[id % 100]['operation'] :
+  if str(data['operation']) == cleanup_dict().operations[operation_id % 100]['operation']:
     res = globals()[data['operation']](**para)
     print res
   return dict(json.loads(res.to_json()))
@@ -104,25 +104,23 @@ def cleanup_api(request):
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
   userid = str(request.authenticated_userid)
-  t = touch()
-  a3db = A3_lib()
-  paths = t.populate(userid)
-  filename = request.POST['csv'].filename
+  paths = touch().populate(userid)
   input_file = request.POST['csv'].file
   filename = str(time.time())
-  # print str(paths[2])
   file_path = os.path.join(paths[0], '%s.csv' % filename)
+  # Lets Write Data To Temporary File
   temp_file_path = file_path + '~'
   input_file.seek(0)
   with open(temp_file_path, 'wb') as output_file:
     shutil.copyfileobj(input_file, output_file)
+  # Lets Rename Temporary File To Original
   os.rename(temp_file_path, file_path)
-  c = readcsv(file_path)
-  pickle_path = os.path.join(paths[2], '%s.pickel' %filename)
-  pickle.dump(c,open(pickle_path ,"wb"))
+  # Lets Create Pickel Of This CSV File
+  pickle.dump(readcsv(file_path), 
+    open(os.path.join(paths[2], '%s.pickel' % filename), 'wb'))
+  # Lets Store filename In Database As stamp
   udf = Udf(stamp=filename, u3id=userid, updated_at=datetime.utcnow(), created_at=datetime.utcnow())
   DBSession.add(udf)
-  print DBSession.query(Udf)
   return HTTPFound(location=request.route_url('app'))
 
 @view_config(route_name='fileupdate', renderer='json')
