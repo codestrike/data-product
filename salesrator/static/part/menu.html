@@ -19,10 +19,10 @@
             <li>
               <a ui-sref="app.dash"><i class="fa fa-dashboard fa-fw"></i> My Dashboard</a>
             </li>
-            <li>
+            <li ng-show="selectedStamp">
               <a ui-sref="app.cleanup"><i class="fa fa-dashboard fa-fw"></i> Data Cleanup</a>
             </li>
-            <li>
+            <li ng-show="selectedStamp">
               <a ui-sref="app.plot"><i class="fa fa-dashboard fa-fw"></i> Graph Plot</a>
             </li>
             <li class="item-divider">
