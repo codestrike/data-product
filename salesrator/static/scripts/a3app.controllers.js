@@ -23,6 +23,7 @@ angular.module('a3app.controllers', ['ngCookies'])
       $scope.operations = res;
       if (angular.isFunction(callback))
         callback();
+      $scope.$broadcast('a3optionsAvailabel');
     });
   };
   $scope.getOperations();
@@ -199,5 +200,5 @@ angular.module('a3app.controllers', ['ngCookies'])
     });
   };
 
-  $scope.getCurrrentStatus();
+  $scope.$on('a3optionsAvailabel', $scope.getCurrrentStatus);
 });
