@@ -35,6 +35,13 @@ class touch(object):
 # functions to handle udf
 def delete_udf(u3id, stamp):
   auto_correct_stamp_for(u3id, stamp_of_deleted_udf=stamp)
+  basepath = os.getcwd() + '/files/' + u3id
+  csvfile = basepath + '/csv/' + stamp + '.csv'
+  picklefile = basepath + '/pickle/' + stamp + '.pickle'
+  if os.path.isfile(csvfile):
+    os.remove(csvfile)
+  if os.path.isfile(picklefile):
+    os.remove(picklefile)
   DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
   return {'status':'success'}
 
