@@ -26,20 +26,16 @@ class touch(object):
       pass
 
   def populate(self, userid):
-    bp = os.getcwd() + '/files/' + userid
-    # file_path = a3file.touchdir(basepath ,'files')
-    # file_path = a3file.touchdir(file_path ,userid)
-    # csv_path = a3file.touchdir(file_path, 'csv' )
-    # img_path = a3file.touchdir(file_path, 'img')
-    # pickle_path = a3file.touchdir(file_path, 'pickle')
-    paths = [bp+'/csv', bp+'/img', bp+'/pickle']
+    basepath = os.getcwd() + '/files/' + userid
+    paths = [basepath+'/csv', basepath+'/img', basepath+'/pickle']
     for x in paths:
       self.touchdir(x)
     return paths
 
 # functions to handle udf
 def delete_udf(u3id, stamp):
-  print DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
+  auto_correct_stamp_for(u3id, stamp_of_deleted_udf=stamp)
+  DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
   return {'status':'success'}
 
 def recreate_pickel_for(u3id, stamp):

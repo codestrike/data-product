@@ -4,7 +4,7 @@
     <div class="col-md-4 col-md-offset-4">
       <h2>Login</h2>
       <p class="alert alert-danger" ng-if="errorMessage">{{errorMessage}}</p>
-      <form ng-submit="try_login()" method="post" name="loginform">
+      <form ng-submit="tryLogin()" method="post" name="loginform">
         <div class="form-group">
           <label>Email address</label>
           <input type="email" class="form-control" ng-model="email" name="email" placeholder="Enter email" required>
