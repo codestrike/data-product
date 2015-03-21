@@ -62,11 +62,12 @@ def replace_negative(frame,col,delete=False,replace_by=None):
 
 
 def to_upper(frame,col):
-	frame[col]=frame[col].apply(lambda x:x.upper)
+	frame[col]=frame[col].apply(lambda x:x.upper())
 	
 
 
 def to_lower(frame,col):
+	# frame[col]=frame[col].apply(lambda x:x.lower) # LAMBDA MUST RETURN VALUE, NOT FUNCTION
 	frame[col]=frame[col].apply(lambda x:x.lower())
 
 def strip_left_right(frame,col):
