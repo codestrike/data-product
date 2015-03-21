@@ -67,6 +67,7 @@ def to_upper(frame,col):
 
 
 def to_lower(frame,col):
+	# frame[col]=frame[col].apply(lambda x:x.lower) # LAMBDA MUST RETURN VALUE, NOT FUNCTION
 	frame[col]=frame[col].apply(lambda x:x.lower())
 
 def strip_left_right(frame,col):
