@@ -82,9 +82,14 @@ def cleanup_api(request):
   data = dict(request.json_body)
   paths = touch().populate(userid)
   (operation_id, para) = (int(data['id']), dict(data['para']))
- 
-  dataframe = readcsv(os.path.join(paths[2],
-    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),0)
+  # check isFile  exist in pickle folder or not.
+  if os.path.isfile(os.path.join(paths[2],get_user(u3id=userid, to_dict=True)['stamp'] + '.csv')):
+    dataframe = readcsv(os.path.join(paths[2],
+      get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),0)
+  else:
+    dataframe = readcsv(os.path.join(paths[0],
+      get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),0)
+
   # dataframe = pd.read_pickle(os.path.join(paths[2],get_user(u3id=userid, to_dict=True)['stamp']+'.pickle'))
   para.update({'frame':dataframe})
   # formatting the column name for example 'Q1'-> 'c.Q1'
