@@ -56,3 +56,6 @@ target/
 *.csv
 *.pickel
 *.pickle
+
+# User FIles
+files/
