@@ -4,6 +4,7 @@ import shutil
 from .a3db import *
 from .reader import *
 from .janitor import *
+from .descriptor import *
 from pyramid.response import Response
 import cPickle as pickle
 from pyramid.httpexceptions import HTTPFound
@@ -102,6 +103,17 @@ def cleanup_api(request):
   print "\n\n\nGoing To Print Describe All on Data Frame\n\n"
   print describe_all(dataframe)
   return dict(json.loads(describe_all(dataframe).to_json()))
+
+@view_config(route_name='plot', renderer='json', permission='auth')
+def plot_api(request):
+  userid = str(request.authenticated_userid)
+  paths = touch().populate(userid)
+  frame = readcsv(os.path.join(paths[0],
+    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
+    0)
+  remove_higher_outlier(frame, 'Tot2014')
+  box_plot(frame,'Tot2014','AgeinService','tot_ageinservice.png',(0,100000000))
+  return {'url':'0.0.0.0:6543/' + os.getcwd() + 'tot_ageinservice.png'}
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
