@@ -38,10 +38,13 @@ def delete_udf(u3id, stamp):
   basepath = os.getcwd() + '/files/' + u3id
   csvfile = basepath + '/csv/' + stamp + '.csv'
   picklefile = basepath + '/pickle/' + stamp + '.pickle'
+  modified_csv = basepath + '/pickle/' + stamp + '.csv'
   if os.path.isfile(csvfile):
     os.remove(csvfile)
   if os.path.isfile(picklefile):
     os.remove(picklefile)
+  if os.path.isfile(modified_csv):
+    os.remove(modified_csv)
   DBSession.delete(DBSession.query(Udf).filter(Udf.stamp==stamp, Udf.u3id==u3id).first())
   return {'status':'success'}
 

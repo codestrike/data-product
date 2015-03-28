@@ -62,7 +62,7 @@ def replace_negative(frame,col,delete=False,replace_by=None):
 
 
 def to_upper(frame,col):
-	frame[col]=frame[col].apply(lambda x:x.upper)
+	frame[col]=frame[col].apply(lambda x:x.upper())
 	
 
 

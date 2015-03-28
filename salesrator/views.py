@@ -6,6 +6,7 @@ from .reader import *
 from .janitor import *
 from pyramid.response import Response
 import cPickle as pickle
+import pandas as pd
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import (
   view_config,
@@ -81,9 +82,14 @@ def cleanup_api(request):
   data = dict(request.json_body)
   paths = touch().populate(userid)
   (operation_id, para) = (int(data['id']), dict(data['para']))
-  dataframe = readcsv(os.path.join(paths[0],
-    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
-    0)
+  if os.path.isfile(os.path.join(paths[2],get_user(u3id=userid, to_dict=True)['stamp'] + '.csv')):
+    dataframe = readcsv(os.path.join(paths[2],
+      get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),0)
+  else:
+    dataframe = readcsv(os.path.join(paths[0],
+      get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),0)
+
+  # dataframe = pd.read_pickle(os.path.join(paths[2],get_user(u3id=userid, to_dict=True)['stamp']+'.pickle'))
   para.update({'frame':dataframe})
   # formatting the column name for example 'Q1'-> 'c.Q1'
   if 'col' in para.keys():
@@ -98,6 +104,8 @@ def cleanup_api(request):
   res = None
   if str(data['operation']) == cleanup_dict().operations[operation_id % 100]['operation']:
     res = globals()[data['operation']](**para)
+    dataframe.to_csv(os.path.join(paths[2],
+    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'))
     print res
   print "\n\n\nGoing To Print Describe All on Data Frame\n\n"
   print describe_all(dataframe)
