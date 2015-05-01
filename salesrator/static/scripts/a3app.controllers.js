@@ -7,9 +7,10 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.a3files = null; // data about uploaded file
   $scope.selectedStamp = null;
   $scope.allColumns = [];
-  $scope.onX = 0;
-  $scope.onY = 0;
+  $scope.onX = -1;
+  $scope.onY = -1;
   $scope.ylim = 1000;
+  $scope.bin = 10;
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
@@ -224,7 +225,8 @@ angular.module('a3app.controllers', ['ngCookies'])
       var toSend = {
         onx: $scope.onX,
         ony: $scope.onY,
-        ylim: $scope.ylim
+        ylim: $scope.ylim,
+        type: imageType
       };
 
       console.log("toSendAPI",toSend);
@@ -235,7 +237,22 @@ angular.module('a3app.controllers', ['ngCookies'])
       });
     }else if(imageType == 'histogram'){
       var toSend = {
-        onx: $scope.onX
+        onx: $scope.onX,
+        bin: $scope.bin,
+        type: imageType
+      };
+
+      console.log("toSendAPI",toSend);
+      $http.post('/api/plot',toSend)
+      .success(function(res){
+        $scope.imageBase64 = res.base64;
+        console.log($scope.imageBase64);
+      });
+    }else{
+      var toSend = {
+        factors: $scope.factors,
+        cluster_no: $scope.cluster_no,
+        type: imageType
       };
 
       console.log("toSendAPI",toSend);

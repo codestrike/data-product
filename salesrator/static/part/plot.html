@@ -33,8 +33,18 @@
             <select class="form-control" ng-model="onX" required>
               <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
             </select>
+            <label for = "bin">Bins</label>
+            <input type="number" class="form-control" ng-model="bin" required>
+          </div>
 
-
+          <div class="panel-body" ng-show="imageType=='cluster'">
+            Inputs for Cluster 
+            <label>Columns </label>
+            <select class="form-control" ng-model="factors" multiple>
+              <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
+            </select>
+            <label for = "cluster_no">Number of Clusters</label>
+            <input type="number" class="form-control" ng-model="cluster_no">
           </div>
           <div class="panel-footer">
             <button class="btn btn-success btn-block" type="submit">Plot</button>

@@ -5,6 +5,7 @@ import shutil
 from .a3db import *
 from .reader import *
 from .janitor import *
+from .clustering import *
 from pyramid.response import Response
 import cPickle as pickle
 import pandas as pd
@@ -51,7 +52,7 @@ might be caused by one of the following things:
 
 1.  You may need to run the "initialize_tutorial_db" script
     to initialize your database tables.  Check your virtual
-    environment's "bin" directory for this script and try to run it.
+    environment's "bin" directoy for this script and try to run it.
 
 2.  Your database server may not be running.  Check that the
     database server referred to by the "sqlalchemy.url" setting in
@@ -126,18 +127,19 @@ def plot_api(request):
   image_path = paths[1] + '/'+ stamp +'.png'
   print "GOING TO PRINT DATA ONY"
   print data
-  # data['ony'] = 'Tot2014'
-  # data['onx'] = 'AgeinService'
   frame = readcsv(os.path.join(paths[0],
     stamp + '.csv'),
     0)
-  remove_higher_outlier(frame, data['ony'])
-  # box_plot(frame,'Tot2014','AgeinService','tot_ageinservice.png',(0,100000000))
-  box_plot(frame,data['ony'], data['onx'], image_path,(0,100000000))
-  toReturn = {'error' : 'Unable to plot'}
-  # with open(image_path, "rb") as image_file:
-  toReturn = { 'base64' : get_base64(image_path) }
-  return toReturn
+  if data['type'] == 'box':
+    remove_higher_outlier(frame, data['ony'])
+    box_plot(frame,data['ony'], data['onx'], image_path,(0,100000000))
+  elif data['type'] == 'histogram':
+    remove_higher_outlier(frame, data['onx'])
+    histogram(frame,data['onx'],image_path,data['bin'])
+  else:
+    factors = list(data['factors'])
+    plot(k_mean(frame, data['cluster_no'], factors), frame, factors, image_path)
+  return { 'base64' : get_base64(image_path) }
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):
