@@ -13,7 +13,7 @@
         <div class="panel panel-default">
         <form ng-submit="doPlot()" name="plotform">
           <div class="panel-heading">Inputs </div>
-          <div class="panel-body" ng-if="imageType=='box'">
+          <div class="panel-body" ng-show="imageType=='box'">
             <label>Column on X:</label>
             <select class="form-control" ng-model="onX" required>
               <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
@@ -27,8 +27,14 @@
             <label>Y Limit</label>
             <input type="number" class="form-control" ng-model="ylim" required>
           </div>
-          <div class="panel-body" ng-if="imageType=='histogram'">
+          <div class="panel-body" ng-show="imageType=='histogram'">
             Inputs for histogram plot
+            <label>Column </label>
+            <select class="form-control" ng-model="onX" required>
+              <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
+            </select>
+
+
           </div>
           <div class="panel-footer">
             <button class="btn btn-success btn-block" type="submit">Plot</button>

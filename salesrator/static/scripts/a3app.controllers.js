@@ -7,6 +7,9 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.a3files = null; // data about uploaded file
   $scope.selectedStamp = null;
   $scope.allColumns = [];
+  $scope.onX = 0;
+  $scope.onY = 0;
+  $scope.ylim = 1000;
 
   if(window.innerWidth < 768)
     $scope.isCollapsed = true;
@@ -213,25 +216,36 @@ angular.module('a3app.controllers', ['ngCookies'])
   $scope.showSidebar(true);
   $scope.imageUrl = '';
   $scope.imageType = null;
-  $scope.onX = 0;
-  $scope.onY = 0;
-  $scope.ylim = 1000;
   $scope.getCurrrentStatus();
 
   $scope.doPlot = function(imageType) {
-    var toSend = {
-      onx: $scope.onX,
-      ony: $scope.onY,
-      ylim: $scope.ylim
-    };
+    var imageType = imageType || $scope.imageType;
+    if(imageType == 'box'){
+      var toSend = {
+        onx: $scope.onX,
+        ony: $scope.onY,
+        ylim: $scope.ylim
+      };
 
-    console.log("toSendAPI",toSend);
-    $http.post('/api/plot',toSend)
-    .success(function(res){
-      $scope.imageBase64 = res.base64;
-      console.log($scope.imageBase64);
-    });
-  };
+      console.log("toSendAPI",toSend);
+      $http.post('/api/plot',toSend)
+      .success(function(res){
+        $scope.imageBase64 = res.base64;
+        console.log($scope.imageBase64);
+      });
+    }else if(imageType == 'histogram'){
+      var toSend = {
+        onx: $scope.onX
+      };
+
+      console.log("toSendAPI",toSend);
+      $http.post('/api/plot',toSend)
+      .success(function(res){
+        $scope.imageBase64 = res.base64;
+        console.log($scope.imageBase64);
+      });
+    }
+  }; 
 })
 .controller('cleanupCtrl', function($http, $scope) {
   $scope.showSidebar(true);

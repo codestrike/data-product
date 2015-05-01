@@ -123,15 +123,15 @@ def plot_api(request):
   paths = touch().populate(userid)
   stamp = get_user(u3id=userid, to_dict=True)['stamp']
   data = dict(request.json_body)
-  data['ony'] = 'Tot2014'
   image_path = paths[1] + '/'+ stamp +'.png'
-  data['onx'] = 'AgeinService'
   print "GOING TO PRINT DATA ONY"
   print data
+  # data['ony'] = 'Tot2014'
+  # data['onx'] = 'AgeinService'
   frame = readcsv(os.path.join(paths[0],
     stamp + '.csv'),
     0)
-  remove_higher_outlier(frame, 'Tot2014')
+  remove_higher_outlier(frame, data['ony'])
   # box_plot(frame,'Tot2014','AgeinService','tot_ageinservice.png',(0,100000000))
   box_plot(frame,data['ony'], data['onx'], image_path,(0,100000000))
   toReturn = {'error' : 'Unable to plot'}
