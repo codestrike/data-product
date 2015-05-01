@@ -1,13 +1,14 @@
+from .descriptor import *
 import os, time, json
 from datetime import datetime
 import shutil
 from .a3db import *
 from .reader import *
 from .janitor import *
-from .descriptor import *
 from pyramid.response import Response
 import cPickle as pickle
 import pandas as pd
+import base64
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import (
   view_config,
@@ -114,14 +115,29 @@ def cleanup_api(request):
 
 @view_config(route_name='plot', renderer='json', permission='auth')
 def plot_api(request):
+  def get_base64(filename):
+    with open(filename, "rb") as i:
+      return base64.b64encode(i.read())
+    return None
   userid = str(request.authenticated_userid)
   paths = touch().populate(userid)
+  stamp = get_user(u3id=userid, to_dict=True)['stamp']
+  data = dict(request.json_body)
+  data['ony'] = 'Tot2014'
+  image_path = paths[1] + '/'+ stamp +'.png'
+  data['onx'] = 'AgeinService'
+  print "GOING TO PRINT DATA ONY"
+  print data
   frame = readcsv(os.path.join(paths[0],
-    get_user(u3id=userid, to_dict=True)['stamp'] + '.csv'),
+    stamp + '.csv'),
     0)
   remove_higher_outlier(frame, 'Tot2014')
-  box_plot(frame,'Tot2014','AgeinService','tot_ageinservice.png',(0,100000000))
-  return {'url':'0.0.0.0:6543/' + os.getcwd() + 'tot_ageinservice.png'}
+  # box_plot(frame,'Tot2014','AgeinService','tot_ageinservice.png',(0,100000000))
+  box_plot(frame,data['ony'], data['onx'], image_path,(0,100000000))
+  toReturn = {'error' : 'Unable to plot'}
+  # with open(image_path, "rb") as image_file:
+  toReturn = { 'base64' : get_base64(image_path) }
+  return toReturn
 
 @view_config(route_name='fileupload', renderer='templates/app.pt', permission='auth')
 def handle_file(request):

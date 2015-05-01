@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
@@ -18,6 +20,7 @@ def box_plot(frame,col,by,filename,ylim=None):
 	#if ylim!=None:
 	#	plt.ylim(ylim)
 	plt.savefig(filename)
+	plt.close()
 	#return dict_plot
 
 

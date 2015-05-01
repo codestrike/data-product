@@ -50,6 +50,39 @@ angular.module('a3app.controllers', ['ngCookies'])
     $scope.inSession = yes;
   };
 
+  $scope.getCurrrentStatus = function() {
+    if (!$scope.operations) return;
+    if ($scope.allColumns === 'working') return;
+    $scope.allColumns = 'working';
+
+    var toSend = {};
+    for (var i = $scope.operations.length - 1; i>=0; i--) {
+      var o = $scope.operations[i];
+      if (o.operation === 'describe_all') {
+        toSend = o;
+        break;
+      }
+    }
+
+    // if (toSend === {}) return;
+
+    toSend.para = {};
+    $http.post('/api/cleanup', toSend)
+    .success(function(res) {
+      $scope.allColumns = [];
+      angular.forEach(res, function(value, key) {
+        this.push({
+          name: key,
+          attrs: value
+        });
+      }, $scope.allColumns);
+    });
+
+  };
+
+  // $scope.getCurrrentStatus();
+  $scope.$on('a3optionsAvailabel', $scope.getCurrrentStatus);
+
   // call initialization functions
   if($cookies.auth_tkt) {
     $scope.getOperations();
@@ -176,15 +209,28 @@ angular.module('a3app.controllers', ['ngCookies'])
   // call initialization functions
   $scope.fetchFilesData($scope.fetchUserData);
 })
-.controller('plotCtrl', function($scope) {
+.controller('plotCtrl', function($http,$scope) {
   $scope.showSidebar(true);
   $scope.imageUrl = '';
   $scope.imageType = null;
+  $scope.onX = 0;
+  $scope.onY = 0;
+  $scope.ylim = 1000;
+  $scope.getCurrrentStatus();
 
-  $scope.plotImage = function(imageType) {
-    if($scope.imageType != imageType) {
-      // $http.get() TODO
-    }
+  $scope.doPlot = function(imageType) {
+    var toSend = {
+      onx: $scope.onX,
+      ony: $scope.onY,
+      ylim: $scope.ylim
+    };
+
+    console.log("toSendAPI",toSend);
+    $http.post('/api/plot',toSend)
+    .success(function(res){
+      $scope.imageBase64 = res.base64;
+      console.log($scope.imageBase64);
+    });
   };
 })
 .controller('cleanupCtrl', function($http, $scope) {
@@ -209,38 +255,9 @@ angular.module('a3app.controllers', ['ngCookies'])
     });
   };
 
-  $scope.getCurrrentStatus = function() {
-    if (!$scope.operations) return;
-    if ($scope.allColumns === 'working') return;
-    $scope.allColumns = 'working';
-
-    var toSend = {};
-    for (var i = $scope.operations.length - 1; i>=0; i--) {
-      var o = $scope.operations[i];
-      if (o.operation === 'describe_all') {
-        toSend = o;
-        break;
-      }
-    }
-
-    // if (toSend === {}) return;
-
-    toSend.para = {};
-    $http.post('/api/cleanup', toSend)
-    .success(function(res) {
-      $scope.allColumns = [];
-      angular.forEach(res, function(value, key) {
-        this.push({
-          name: key,
-          attrs: value
-        });
-      }, $scope.allColumns);
-    });
-
-  };
-
+  
   // call initialization functions
   $scope.getCurrrentStatus();
 
-  $scope.$on('a3optionsAvailabel', $scope.getCurrrentStatus);
+  
 });

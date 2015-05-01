@@ -11,21 +11,31 @@
         </h1>
         
         <div class="panel panel-default">
+        <form ng-submit="doPlot()" name="plotform">
           <div class="panel-heading">Inputs </div>
           <div class="panel-body" ng-if="imageType=='box'">
-            <label>Column to plot</label>
-            <select class="form-control">
-              <option ng-repeat="c in a3file.col">{{c}}</option>
+            <label>Column on X:</label>
+            <select class="form-control" ng-model="onX" required>
+              <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
             </select>
+
+            <label>Column on Y:</label>
+            <select class="form-control" ng-model="onY" required>
+              <option ng-repeat="c in allColumns" value="{{c.name}}">{{c.name}}</option>
+            </select>
+
+            <label>Y Limit</label>
+            <input type="number" class="form-control" ng-model="ylim" required>
           </div>
           <div class="panel-body" ng-if="imageType=='histogram'">
             Inputs for histogram plot
           </div>
           <div class="panel-footer">
-            <button class="btn btn-success btn-block">Plot</button>
+            <button class="btn btn-success btn-block" type="submit">Plot</button>
           </div>
         </div>
-        <img class="img-responsive" ng-show="{{imageUrl}}" src="{{imageUrl}}">
+        </form>
+        <img class="img-responsive" src="data:image/png;base64,{{imageBase64}}">
       </div>
       <!-- /.col-lg-12 -->
     </div>
